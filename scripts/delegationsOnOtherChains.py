@@ -4,6 +4,7 @@ import json
 import delegatorSnapshotProcessing as helper
 import utils 
 import yaml
+import time
 from cosmpy.aerial.client import LedgerClient, NetworkConfig
 
 def main(sourcechain,chaintoanalyse): 
@@ -59,6 +60,14 @@ def queryDelegatedBalancesByAddressList(chain_addresses,ledgerclient):
             except Exception as e:
                 print("exception occured")
                 print(e)
+                time.sleep(0.5)
+                try:
+                    s=ledgerclient.query_staking_summary(address)
+                    print("retry success")
+                    if s.total_staked>0:
+                        chainBalancesByAddress.append([address,s.total_staked])
+                except: 
+                    print("retry failed") 
     return(chainBalancesByAddress) 
 
 
