@@ -5,6 +5,6 @@ compareCurrentandPastSnapshot.py - analysis based on current (api read) and past
 
 delegatorSnapshotProcessing.py - helper file with functions for processing 
 
-delegationsOnOtherChains.py - checks delegators on Juno against possible delegations on prospective chains (Akash configured) 
+delegationsOnOtherChains.py - checks delegators on Juno against possible delegations on prospective chains
 
 to do: re-write scripts after proving they work to be more general 
