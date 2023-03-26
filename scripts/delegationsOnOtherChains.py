@@ -13,23 +13,23 @@ def main():
         akash_address=utils.convert_address_to_address("juno",delegator,"akash")
         akash_addresses.append(akash_address)
     print(len(akash_addresses))
-    akash_balances=[]
     
+    akash_balances=[]
+
+    cfg=utils.getAkashCFG()
+    client=utils.getCosmpyClient(cfg)
+
     for index,address in enumerate(akash_addresses):
         print(index)
-        url=f"https://akash-api.polkachu.com/cosmos/staking/v1beta1/delegations/{address}"
         try:
-            delegation_response=helper.snapshotDelegatorsUsingAPI(url)
-            sum_delegator=0
-            if len(delegation_response)>0:
-                for delegations in delegation_response:
-                    delegation=float(delegations["delegation"]["shares"])
-                    sum_delegator=delegation+sum_delegator
-                akash_balances.append(sum_delegator)
+            s=client.query_staking_summary(address)
+            if s.total_staked>0:
+                akash_balances.append([address,s.total_staked])
+                print(akash_balances)
         except:
             print("exception occured")
     df=pd.DataFrame(akash_balances)
-    df.to_csv("akash_balances.csv")
+    df.to_csv("akash_balances_2.csv")
             
 
 main()
