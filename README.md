@@ -7,5 +7,4 @@ delegatorSnapshotProcessing.py - helper file with functions for processing
 
 delegationsOnOtherChains.py - checks delegators on Juno against possible delegations on prospective chains (Akash configured) 
 
-to do: 
-Use BECH32 derivation for addresses across chains to determine prospective sets
+to do: re-write scripts after proving they work to be more general 
