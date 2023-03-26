@@ -1,0 +1,24 @@
+networks: 
+ juno:
+   validator: "junovaloper1x8u2ypdr35802tjyjqyxan8x85fzxe6sk0qmh8"
+   api: "https://juno-api.kleomedes.network/"
+   addressprefix: "juno" 
+ akash:
+  validator: "akashvaloper10xzfwyvguf6eepfewjlptwzz2ylh37a25xzeqt"
+  addressprefix: "akash" 
+  config:
+    chain_id: "akashnet-2"
+    url: "grpc+https://grpc-akash-ia.cosmosia.notional.ventures:443"
+    fee_minimum_gas_price: 0
+    fee_denomination: "uakt"
+    staking_denomination: "uakt"
+ injective: 
+  validator: ""
+  addressprefix: "inj" 
+  config: 
+    chain_id: "injective-1"
+    url: "grpc+https://grpc-injective-ia.cosmosia.notional.ventures:443"
+    fee_minimum_gas_price: 50000000
+    fee_denomination: "inj"
+    staking_denomination: "inj"
+
