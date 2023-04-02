@@ -1,116 +1,73 @@
 import requests 
 import pandas as pd
-import json
 import delegatorSnapshotProcessing as helper
 import utils 
-import yaml
 import time
+from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY,validator_address
 from cosmpy.aerial.client import LedgerClient, NetworkConfig
 
-def main(sourcechain,chaintoanalyse): 
-    delegation_response=getValidatorDelegationResponseFromAPI(sourcechain)
-    dfDelegators=helper.convertJSONtoDataFrame(delegation_response)
-    chain_addresses=getChainToAnalyseAddresses(sourcechain,chaintoanalyse,dfDelegators)
-    networkcfg= getNetworkConfig(chaintoanalyse)
-    ledgercfg=getLedgerClientConfig(networkcfg)
-    ledgerclient=utils.getCosmpyClient(ledgercfg)
+##this queries the API for source chain to determine who is delegating to Kleomedes validator on Source Chain (requires having validator address in constants.py)
+##then converts the address to the chain to analyse address format (only works for BECH32 normal conversions, INJ so far is rekt, use publicKeyUtils for this)
+##queries chain to analyse and gets ALL accounts on the chain, checks if the address to analyse is part of the accounts in chain 
+##then returns DELEGATED tokens of the chain (not balance held) for each address from the source chain that was delegated to Kleo 
+##purpose of this is to determine how many Kleo delegators have presence in another chain
+
+
+def main(sourcechain,chaintoanalyse):
+    dfcomparison=compareDelegatorsWithAnalysisChain(sourcechain,chaintoanalyse)
+    chain_addresses=dfcomparison["address"]
     print(f"Querying {sourcechain} delegators to Kleomedes balances on {chaintoanalyse}")
-    ##chainBalancesByAddress=queryDelegatedBalancesByAddressList(chain_addresses,ledgerclient)
-    chainBalancesByAddress=queryDelegatedBalancesByAddressListAPI(chain_addresses[1:300],chaintoanalyse)
+    ##chainBalancesByAddress=queryDelegatedBalancesByAddressList(chain_addresses,ledgerclient) ##has issues with injectives long int()
+    chainBalancesByAddress=queryDelegatedBalancesByAddressListAPI(chain_addresses,chaintoanalyse)
     df=pd.DataFrame(chainBalancesByAddress)
-    df.to_csv(f"balances{chaintoanalyse}.csv")
+    print(df.columns)
+    df.to_csv(f"results/{sourcechain}balancesOn{chaintoanalyse}.csv")
             
 def getValidatorDelegationResponseFromAPI(sourcechain):
-    sourcechainconfig=getNetworkConfig(sourcechain)
-    validatoraddress=sourcechainconfig["validator"]
-    api=sourcechainconfig["api"]
-    query=f"cosmos/staking/v1beta1/validators/{validatoraddress}/delegations?pagination.limit=50000"
+    validatoraddress=validator_address[sourcechain]
+    api=utils.getAPIURl(sourcechain)
+    query=f"/cosmos/staking/v1beta1/validators/{validatoraddress}/delegations?pagination.limit=50000"
     url=f"{api}{query}"
     delegation_response=helper.snapshotDelegatorsUsingAPI(url)
     return delegation_response
 
 def getChainToAnalyseAddresses(sourcechain,chaintoanalyse,dfDelegators):
     chain_addresses=[]
-    sourceconfig=getNetworkConfig(sourcechain)
-    chaintoanalyseconfig=getNetworkConfig(chaintoanalyse)
+    sourceprefix=utils.get_network_bech32_prefix(sourcechain)
+    analysechainprefix=utils.get_network_bech32_prefix(chaintoanalyse)
     for delegator in dfDelegators["address"]:
-        chain_address=utils.convert_address_to_address(sourceconfig["addressprefix"],delegator,chaintoanalyseconfig["addressprefix"])
+        chain_address=utils.convert_address_to_address(sourceprefix,delegator,analysechainprefix)
         chain_addresses.append(chain_address)
     return chain_addresses
 
-def getNetworkConfig(chain):
-    with open("networkconfig.yaml", "r") as file:   
-        networkconfig=yaml.safe_load(file)
-        chainconfig=networkconfig["networks"][chain]
-    return chainconfig
-
-def getLedgerClientConfig(chainconfig):
-    config=chainconfig["config"]
-    ledgercfg=NetworkConfig(**config)
-    print(ledgercfg)
-    return ledgercfg
-
-def queryDelegatedBalancesByAddressList(chain_addresses,ledgerclient):
-    chainBalancesByAddress=[]   
-    for index,address in enumerate(chain_addresses):
-            print(f"{index} of {len(chain_addresses)}") 
-            try:
-                s=ledgerclient.query_staking_summary(address)
-                if s.total_staked>0:
-                    chainBalancesByAddress.append([address,s.total_staked])
-            except Exception as e:
-                print("exception occured")
-                print(e)
-                time.sleep(0.5)
-                try:
-                    s=ledgerclient.query_staking_summary(address)
-                    print("retry success")
-                    if s.total_staked>0:
-                        chainBalancesByAddress.append([address,s.total_staked])
-                except: 
-                    print("retry failed") 
-    return(chainBalancesByAddress) 
-
 def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
      chainBalancesByAddress=[]
-     chainconfig=getNetworkConfig(chaintoanalyse)
-     api=chainconfig["api"]
+     chainconfig=utils.get_network_config(chaintoanalyse)
+     api=utils.getAPIURl(chaintoanalyse)
 
      for index,address in enumerate(chain_addresses):
         print(f"{index} of {len(chain_addresses)}") 
-        url=f"{api}cosmos/staking/v1beta1/delegations/{address}"
+        url=f"{api}/cosmos/staking/v1beta1/delegations/{address}"
         try:
             delegation_response=helper.snapshotDelegatorsUsingAPI(url)
             sum_delegator=0
-            if len(delegation_response)>0:
+            if len(delegation_response)>=0:
                 for delegations in delegation_response:
                     delegation=float(delegations["delegation"]["shares"])
                     sum_delegator=delegation+sum_delegator
-                chainBalancesByAddress.append(sum_delegator)
+                chainBalancesByAddress.append([sum_delegator,str(address)])
         except Exception as e:
             print("exception occured")
             print(e)
-            time.sleep(15)
-            try:
-                delegation_response=helper.snapshotDelegatorsUsingAPI(url)
-                sum_delegator=0
-                if len(delegation_response)>0:
-                    for delegations in delegation_response:
-                        delegation=float(delegations["delegation"]["shares"])
-                        sum_delegator=delegation+sum_delegator
-                    chainBalancesByAddress.append(sum_delegator)
-            except Exception as e:
-                print("exception occured")
-                print(e) 
 
      return chainBalancesByAddress
 
 def queryGetAllAccounts(chaintoanalyse):
-     chainconfig=getNetworkConfig(chaintoanalyse)
-     api=chainconfig["api"]
-     url=f"{api}cosmos/auth/v1beta1/accounts?pagination.limit=500000"
+     api=utils.getAPIURl(chaintoanalyse)
+     url=f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=500000"
      print(url)
-     response=requests.get(url)
+     response=utils.get_API_data_with_retry(url)
+     print(response.raise_for_status())
      return response.json()
 
 def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
@@ -122,15 +79,15 @@ def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
             try:
                 accountsOnChain.append(accounts["address"])
             except Exception as e:
-                print(accounts)
                 print(f"exception{e}")
-        if accounts["@type"]=="/injective.types.v1beta1.EthAccount":
+        elif accounts["@type"]=="/injective.types.v1beta1.EthAccount" or accounts["@type"]=="/ethermint.types.v1.EthAccount":
             try:
                 accountsOnChain.append(accounts["base_account"]["address"])
             except Exception as e:
-                print(accounts)
+
                 print(f"exception{e}")
         else: 
+            print("Account [@type] doesn't match existing schema for:")
             print(accounts)
 
     dfAccountsOnChain=pd.DataFrame(accountsOnChain,columns=["address"])
@@ -139,10 +96,8 @@ def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
 
     chain_addresses=getChainToAnalyseAddresses(sourcechain,chaintoAnalyse,dfDelegators)
     dfchain_addresses=pd.DataFrame(chain_addresses,columns=["address"])
-
     comparison=helper.createComparisonDelegatorDataFrame(dfAccountsOnChain,dfchain_addresses)
-
-    print(comparison)
+    print(f"{len(comparison)} addresses found in {chaintoAnalyse} with delegations to Kleomedes in {sourcechain}")
     return comparison
 
 def getDelegatorsAndConvert(chain):
@@ -151,7 +106,14 @@ def getDelegatorsAndConvert(chain):
     return dfDelegators
 
 
-##main("juno","akash")
-##main("juno","injective")
-compareDelegatorsWithAnalysisChain("juno","akash")
+if __name__=="__main__":
+    ##main("juno","akash")
+    ##main("juno","injective")
+    ##main("juno","kava")
+    main("juno","quicksilver")
+    main("fetchhub","quicksilver")
+    main("juno","kava")
+    main("fetchhub","kava")
+    main("juno","sommelier")
+    main("fetchhub","sommelier")
 

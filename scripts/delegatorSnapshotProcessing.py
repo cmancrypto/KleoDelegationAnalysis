@@ -1,10 +1,11 @@
 import requests
 import pandas as pd
 import json
+import utils
 
 def snapshotDelegatorsUsingAPI(url: str, createcsv: bool = False):
     #bool doesn't work yet - too lazy
-    response=requests.get(url)
+    response=utils.get_API_data_with_retry(url)
     delegation_responses=response.json()["delegation_responses"]
     return delegation_responses
 
