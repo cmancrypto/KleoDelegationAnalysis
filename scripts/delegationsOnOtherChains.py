@@ -66,11 +66,18 @@ def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
      return chainBalancesByAddress
 
 def queryGetAllAccounts(chaintoanalyse):
+     ##this would be much better with using seed until it runs out
      api=utils.getAPIURl(chaintoanalyse)
      url=f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=500000"
      print(url)
-     response=utils.get_API_data_with_retry(url)
-     print(response.raise_for_status())
+     try:
+        response=utils.get_API_data_with_retry(url)
+        print(response.raise_for_status())
+     except Exception as e:
+        print(f"{chaintoanalyse} didn't accept long query") 
+        ##some chains don't like the long query - this only does first 30k - doesn't check length
+        url=f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=30000"
+        response=utils.get_API_data_with_retry(url)
      return response.json()
 
 def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
@@ -115,7 +122,7 @@ def getDelegatorsAndConvert(chain):
 if __name__=="__main__":
     #chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]
     #chains=["akash"]
-    chains=["gravitybridge","umee"]
+    chains=["sentinel"]
     sums=[]
     failures=[]
     for chain in chains:
