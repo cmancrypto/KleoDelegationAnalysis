@@ -1,7 +1,7 @@
 import requests 
 import pandas as pd
 import json
-import delegatorSnapshotProcessing as helper
+import delegatorSnapshotUtils as helper
 def main(): 
     ##read API for current snapshot
     url="https://juno-api.kleomedes.network/cosmos/staking/v1beta1/validators/junovaloper1x8u2ypdr35802tjyjqyxan8x85fzxe6sk0qmh8/delegations?pagination.limit=50000"

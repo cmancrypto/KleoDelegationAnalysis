@@ -1,6 +1,6 @@
 import requests 
 import pandas as pd
-import delegatorSnapshotProcessing as helper
+from delegatorSnapshotUtils import getValidatorDelegationResponseFromAPI, getDelegatorsAndConvert, snapshotDelegatorsUsingAPI, createComparisonDelegatorDataFrame
 import utils 
 import time
 from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY,validator_address
@@ -25,15 +25,6 @@ def main(sourcechain,chaintoanalyse):
     sum_column=df.iloc[:,0].sum()
     return sum_column,df
 
-            
-def getValidatorDelegationResponseFromAPI(sourcechain):
-    validatoraddress=validator_address[sourcechain]
-    api=utils.getAPIURl(sourcechain)
-    query=f"/cosmos/staking/v1beta1/validators/{validatoraddress}/delegations?pagination.limit=50000"
-    url=f"{api}{query}"
-    delegation_response=helper.snapshotDelegatorsUsingAPI(url)
-    return delegation_response
-
 def getChainToAnalyseAddresses(sourcechain,chaintoanalyse,dfDelegators):
     chain_addresses=[]
     sourceprefix=utils.get_network_bech32_prefix(sourcechain)
@@ -52,7 +43,7 @@ def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
         print(f"{index} of {len(chain_addresses)}") 
         url=f"{api}/cosmos/staking/v1beta1/delegations/{address}"
         try:
-            delegation_response=helper.snapshotDelegatorsUsingAPI(url)
+            delegation_response=snapshotDelegatorsUsingAPI(url)
             sum_delegator=0
             if len(delegation_response)>=0:
                 for delegations in delegation_response:
@@ -109,15 +100,9 @@ def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
 
     chain_addresses=getChainToAnalyseAddresses(sourcechain,chaintoAnalyse,dfDelegators)
     dfchain_addresses=pd.DataFrame(chain_addresses,columns=["address"])
-    comparison=helper.createComparisonDelegatorDataFrame(dfAccountsOnChain,dfchain_addresses)
+    comparison=createComparisonDelegatorDataFrame(dfAccountsOnChain,dfchain_addresses)
     print(f"{len(comparison)} addresses found in {chaintoAnalyse} with delegations to Kleomedes in {sourcechain}")
     return comparison
-
-def getDelegatorsAndConvert(chain):
-    delegation_response=getValidatorDelegationResponseFromAPI(chain)
-    dfDelegators=helper.convertJSONtoDataFrame(delegation_response)
-    return dfDelegators
-
 
 if __name__=="__main__":
     #chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]
