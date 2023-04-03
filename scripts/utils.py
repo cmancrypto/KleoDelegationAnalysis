@@ -78,7 +78,7 @@ def convert_assets_data(assets: List[Dict]) -> Dict:
 
     return res_dict
 
-def get_API_data_with_retry(url, retries=3, delay=5):
+def get_API_data_with_retry(url, retries=10, delay=5):
     for i in range(retries):
             try:
                 response = requests.get(url)

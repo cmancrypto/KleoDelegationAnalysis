@@ -22,6 +22,9 @@ def main(sourcechain,chaintoanalyse):
     df=pd.DataFrame(chainBalancesByAddress)
     print(df.columns)
     df.to_csv(f"results/{sourcechain}balancesOn{chaintoanalyse}.csv")
+    sum_column=df.iloc[:,0].sum()
+    return sum_column,df
+
             
 def getValidatorDelegationResponseFromAPI(sourcechain):
     validatoraddress=validator_address[sourcechain]
@@ -88,7 +91,10 @@ def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
                 print(f"exception{e}")
         else: 
             print("Account [@type] doesn't match existing schema for:")
-            print(accounts)
+            try:
+                print(accounts["@type"])
+            except Exception as e:
+                print(e)
 
     dfAccountsOnChain=pd.DataFrame(accountsOnChain,columns=["address"])
 
@@ -107,13 +113,19 @@ def getDelegatorsAndConvert(chain):
 
 
 if __name__=="__main__":
-    ##main("juno","akash")
-    ##main("juno","injective")
-    ##main("juno","kava")
-    main("juno","quicksilver")
-    main("fetchhub","quicksilver")
-    main("juno","kava")
-    main("fetchhub","kava")
-    main("juno","sommelier")
-    main("fetchhub","sommelier")
-
+    #chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]
+    #chains=["akash"]
+    chains=["gravitybridge","umee"]
+    sums=[]
+    failures=[]
+    for chain in chains:
+        try: 
+            [sum,df]=main("juno",chain)
+            sums.append([sum,chain])
+        except Exception as e:
+            print(e)
+            failures.append(chain)
+    print(sums)
+    print(failures)
+    df=pd.DataFrame(sums)
+    df.to_csv(f"results/allChainSumsFromJunoDelegators.csv")
