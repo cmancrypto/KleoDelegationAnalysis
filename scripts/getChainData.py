@@ -17,10 +17,13 @@ def getNetworkResults(chainresults):
     chain_name=chainresults["chain_name"]
     chain_id=chainresults["chain_id"]
     bech32_prefix=chainresults["bech32_prefix"]
-    fee_minimum_gas_price=chainresults["fees"]["fee_tokens"][0]["fixed_min_gas_price"]
-    fee_denomination=chainresults["fees"]["fee_tokens"][0]["denom"]
-    staking_denomination=chainresults["staking"]["staking_tokens"][0]["denom"]
-
+    try:
+        fee_minimum_gas_price=chainresults["fees"]["fee_tokens"][0]["fixed_min_gas_price"]
+        fee_denomination=chainresults["fees"]["fee_tokens"][0]["denom"]
+        staking_denomination=chainresults["staking"]["staking_tokens"][0]["denom"]
+    except: 
+        fee_minimum_gas_price=0
+        ##might need to add fee denom here
 
     networkresults=[chain_name,
          chain_id,

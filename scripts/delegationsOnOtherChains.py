@@ -107,7 +107,7 @@ def compareDelegatorsWithAnalysisChain(sourcechain,chaintoAnalyse):
 if __name__=="__main__":
     #chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]
     #chains=["akash"]
-    chains=["sentinel"]
+    chains=["cudos"]
     sums=[]
     failures=[]
     for chain in chains:

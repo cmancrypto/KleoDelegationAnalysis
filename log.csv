@@ -1,0 +1,39 @@
+filename,date
+./snapshots/juno2023-04-04_19-10-07.csv,2023-04-04,"                                                 address        value
+0            juno1qqrnzytacq9gah4a8697lfr45wkmrzmpc2nw0l   10300983.0
+1            juno1qqremmrvuwqz74dkudgdze53tktf6tr3w94nrt     102500.0
+2            juno1qq9q07ppx7s88md8capqgkahnna6va9chy0w7s    3252162.0
+3            juno1qqge5vj0v523kx3e7mze6syemt6hzp0jxgu3a9      22200.0
+4            juno1qqff9szr0def4x9wgt8neujwd7hah9tugd8zx6  101250000.0
+...                                                  ...          ...
+14905        juno1ll4zt5n49nf2ys9gdy4gjx6j2duntyy80jnaqp    1500000.0
+14906        juno1lla7kj4tnv7jdaqv930wt2ddyjrakl9l9psg96       1000.0
+14907  juno1fmjm20gpnl5zjydm0wgcwquleyy9degk7te6msftx...      30558.0
+14908  juno1cvz4zvv5v002d36wemuhs23dkatk9erhuhgkryad5...      10000.0
+14909  juno17cya4sw72h4886zsm2lk3udxaw5m8ssgpsl6nd6xl...  145315183.0
+
+[14910 rows x 2 columns]"
+./snapshots/juno2023-04-04_19-10-47.csv,2023-04-04,"                                                 address        value
+0            juno1qqrnzytacq9gah4a8697lfr45wkmrzmpc2nw0l   10300983.0
+1            juno1qqremmrvuwqz74dkudgdze53tktf6tr3w94nrt     102500.0
+2            juno1qq9q07ppx7s88md8capqgkahnna6va9chy0w7s    3252162.0
+3            juno1qqge5vj0v523kx3e7mze6syemt6hzp0jxgu3a9      22200.0
+4            juno1qqff9szr0def4x9wgt8neujwd7hah9tugd8zx6  101250000.0
+...                                                  ...          ...
+14905        juno1ll4zt5n49nf2ys9gdy4gjx6j2duntyy80jnaqp    1500000.0
+14906        juno1lla7kj4tnv7jdaqv930wt2ddyjrakl9l9psg96       1000.0
+14907  juno1fmjm20gpnl5zjydm0wgcwquleyy9degk7te6msftx...      30558.0
+14908  juno1cvz4zvv5v002d36wemuhs23dkatk9erhuhgkryad5...      10000.0
+14909  juno17cya4sw72h4886zsm2lk3udxaw5m8ssgpsl6nd6xl...  145315183.0
+
+[14910 rows x 2 columns]"
+./snapshots/juno2023-04-04_19-48-22.csv,2023-04-04,juno
+./snapshots/kava2023-04-04_19-48-24.csv,2023-04-04,kava
+./snapshots/juno2023-04-04_19-49-14.csv,2023-04-04,juno
+./snapshots/kava2023-04-04_19-49-16.csv,2023-04-04,kava
+./snapshots/juno2023-04-04_19-49-36.csv,2023-04-04,juno
+./snapshots/kava2023-04-04_19-49-37.csv,2023-04-04,kava
+./snapshots/akash2023-04-04_19-49-38.csv,2023-04-04,akash
+./snapshots/juno2023-04-04_19-50-06.csv,2023-04-04,juno
+./snapshots/kava2023-04-04_19-50-08.csv,2023-04-04,kava
+./snapshots/akash2023-04-04_19-50-08.csv,2023-04-04,akash
