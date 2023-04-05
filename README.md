@@ -1,6 +1,9 @@
 # KleoDelegationAnalysis
 Kleo Delegator Analysis
 
+There is a pipfile from pipenv, but it hasn't been updated.
+Can update if needed. 
+
 Finished: 
 
 delegationsOnOtherChains.py - checks delegators on sourcechain and queries total balance on "chain to analyse"
