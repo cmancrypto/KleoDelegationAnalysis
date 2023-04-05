@@ -1,39 +1,35 @@
-filename,date
-./snapshots/juno2023-04-04_19-10-07.csv,2023-04-04,"                                                 address        value
-0            juno1qqrnzytacq9gah4a8697lfr45wkmrzmpc2nw0l   10300983.0
-1            juno1qqremmrvuwqz74dkudgdze53tktf6tr3w94nrt     102500.0
-2            juno1qq9q07ppx7s88md8capqgkahnna6va9chy0w7s    3252162.0
-3            juno1qqge5vj0v523kx3e7mze6syemt6hzp0jxgu3a9      22200.0
-4            juno1qqff9szr0def4x9wgt8neujwd7hah9tugd8zx6  101250000.0
-...                                                  ...          ...
-14905        juno1ll4zt5n49nf2ys9gdy4gjx6j2duntyy80jnaqp    1500000.0
-14906        juno1lla7kj4tnv7jdaqv930wt2ddyjrakl9l9psg96       1000.0
-14907  juno1fmjm20gpnl5zjydm0wgcwquleyy9degk7te6msftx...      30558.0
-14908  juno1cvz4zvv5v002d36wemuhs23dkatk9erhuhgkryad5...      10000.0
-14909  juno17cya4sw72h4886zsm2lk3udxaw5m8ssgpsl6nd6xl...  145315183.0
 
-[14910 rows x 2 columns]"
-./snapshots/juno2023-04-04_19-10-47.csv,2023-04-04,"                                                 address        value
-0            juno1qqrnzytacq9gah4a8697lfr45wkmrzmpc2nw0l   10300983.0
-1            juno1qqremmrvuwqz74dkudgdze53tktf6tr3w94nrt     102500.0
-2            juno1qq9q07ppx7s88md8capqgkahnna6va9chy0w7s    3252162.0
-3            juno1qqge5vj0v523kx3e7mze6syemt6hzp0jxgu3a9      22200.0
-4            juno1qqff9szr0def4x9wgt8neujwd7hah9tugd8zx6  101250000.0
-...                                                  ...          ...
-14905        juno1ll4zt5n49nf2ys9gdy4gjx6j2duntyy80jnaqp    1500000.0
-14906        juno1lla7kj4tnv7jdaqv930wt2ddyjrakl9l9psg96       1000.0
-14907  juno1fmjm20gpnl5zjydm0wgcwquleyy9degk7te6msftx...      30558.0
-14908  juno1cvz4zvv5v002d36wemuhs23dkatk9erhuhgkryad5...      10000.0
-14909  juno17cya4sw72h4886zsm2lk3udxaw5m8ssgpsl6nd6xl...  145315183.0
-
-[14910 rows x 2 columns]"
-./snapshots/juno2023-04-04_19-48-22.csv,2023-04-04,juno
-./snapshots/kava2023-04-04_19-48-24.csv,2023-04-04,kava
-./snapshots/juno2023-04-04_19-49-14.csv,2023-04-04,juno
-./snapshots/kava2023-04-04_19-49-16.csv,2023-04-04,kava
-./snapshots/juno2023-04-04_19-49-36.csv,2023-04-04,juno
-./snapshots/kava2023-04-04_19-49-37.csv,2023-04-04,kava
-./snapshots/akash2023-04-04_19-49-38.csv,2023-04-04,akash
-./snapshots/juno2023-04-04_19-50-06.csv,2023-04-04,juno
-./snapshots/kava2023-04-04_19-50-08.csv,2023-04-04,kava
-./snapshots/akash2023-04-04_19-50-08.csv,2023-04-04,akash
+./snapshots/juno2023-04-05_19-39-02.csv,2023-04-05,juno
+./snapshots/kava2023-04-05_19-39-04.csv,2023-04-05,kava
+./snapshots/akash2023-04-05_19-39-05.csv,2023-04-05,akash
+./snapshots/cudos2023-04-05_19-39-05.csv,2023-04-05,cudos
+./snapshots/akash2023-04-05_19-39-43.csv,2023-04-05,akash
+./snapshots/cheqd2023-04-05_19-39-45.csv,2023-04-05,cheqd
+./snapshots/chihuahua2023-04-05_19-39-48.csv,2023-04-05,chihuahua
+./snapshots/comdex2023-04-05_19-39-48.csv,2023-04-05,comdex
+./snapshots/cudos2023-04-05_19-40-45.csv,2023-04-05,cudos
+./snapshots/decentr2023-04-05_19-40-46.csv,2023-04-05,decentr
+./snapshots/desmos2023-04-05_19-40-47.csv,2023-04-05,desmos
+./snapshots/dig2023-04-05_19-40-48.csv,2023-04-05,dig
+./snapshots/evmos2023-04-05_19-40-51.csv,2023-04-05,evmos
+./snapshots/fetchhub2023-04-05_19-40-52.csv,2023-04-05,fetchhub
+./snapshots/impacthub2023-04-05_19-40-53.csv,2023-04-05,impacthub
+./snapshots/injective2023-04-05_19-40-55.csv,2023-04-05,injective
+./snapshots/jackal2023-04-05_19-40-56.csv,2023-04-05,jackal
+./snapshots/juno2023-04-05_19-41-01.csv,2023-04-05,juno
+./snapshots/kava2023-04-05_19-41-03.csv,2023-04-05,kava
+./snapshots/kichain2023-04-05_19-41-11.csv,2023-04-05,kichain
+./snapshots/kujira2023-04-05_19-41-15.csv,2023-04-05,kujira
+./snapshots/lumnetwork2023-04-05_19-41-16.csv,2023-04-05,lumnetwork
+./snapshots/meme2023-04-05_19-41-19.csv,2023-04-05,meme
+./snapshots/migaloo2023-04-05_19-41-20.csv,2023-04-05,migaloo
+./snapshots/oraichain2023-04-05_19-41-21.csv,2023-04-05,oraichain
+./snapshots/osmosis2023-04-05_19-41-41.csv,2023-04-05,osmosis
+./snapshots/persistence2023-04-05_19-41-43.csv,2023-04-05,persistence
+./snapshots/rebus2023-04-05_19-41-46.csv,2023-04-05,rebus
+./snapshots/rizon2023-04-05_19-41-47.csv,2023-04-05,rizon
+./snapshots/shentu2023-04-05_19-41-48.csv,2023-04-05,shentu
+./snapshots/sifchain2023-04-05_19-41-50.csv,2023-04-05,sifchain
+./snapshots/stride2023-04-05_19-41-54.csv,2023-04-05,stride
+./snapshots/teritori2023-04-05_19-41-57.csv,2023-04-05,teritori
+./snapshots/vidulum2023-04-05_19-41-58.csv,2023-04-05,vidulum

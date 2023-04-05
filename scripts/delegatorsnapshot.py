@@ -2,6 +2,7 @@ from delegatorSnapshotUtils import getValidatorDelegationResponseFromAPI, getDel
 from datetime import datetime, date 
 import pandas as pd
 import os
+import json
 
 def takeSnapshot(chain):
     df=getDelegatorsAndConvert(chain)
@@ -39,8 +40,15 @@ def snapChainList(list_of_chains):
         try:
             takeSnapshotandLog(chain)
         except Exception as e: 
-            print(f"error:{e}")
-    
+            print(f"error:{e} on {chain}")
+
+def getChainList(path):
+    with open(path,"r") as f: 
+        data=json.load(f)
+    chain_list=list(data.keys())
+    return chain_list
+
+
 if __name__ == "__main__":
-    chainlist=["juno","kava","akash","cudos"]
+    chainlist=getChainList("validatorlist.json")
     snapChainList(chainlist)

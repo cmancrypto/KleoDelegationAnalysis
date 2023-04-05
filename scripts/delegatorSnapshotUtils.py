@@ -47,12 +47,24 @@ def convertJSONtoDataFrame(delegation_responses):
 
 ##return delegator snapshot
 def getValidatorDelegationResponseFromAPI(sourcechain):
-    validatoraddress=validator_address[sourcechain]
+    validatoraddress=getValidatorAddress(sourcechain)
     api=utils.getAPIURl(sourcechain)
+    ##pagination here may be an issue eventually
     query=f"/cosmos/staking/v1beta1/validators/{validatoraddress}/delegations?pagination.limit=50000"
     url=f"{api}{query}"
     delegation_response=snapshotDelegatorsUsingAPI(url)
     return delegation_response
+
+def getValidatorAddress(chain):
+    with open("validatorlist.json", 'r') as f:
+        data = json.load(f)
+    # Get the validator address for a given chain name
+    if chain in data:
+        validator_address = data[chain]
+        return validator_address
+    else:
+        print(f"No validator address found for {chain}")
+
 
 #convert delegators to dataframe - uses getValidatorDelegationResponseFromAPI
 def getDelegatorsAndConvert(chain):
