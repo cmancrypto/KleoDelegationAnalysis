@@ -50,5 +50,6 @@ def getChainList(path):
 
 
 if __name__ == "__main__":
+    ##can create new validator list if reqd out of get getValidator.py
     chainlist=getChainList("validatorlist.json")
     snapChainList(chainlist)
