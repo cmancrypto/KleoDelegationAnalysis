@@ -57,10 +57,6 @@ def get_network_bech32_prefix(chain):
     bech32_prefix=chain_results["chain"]["bech32_prefix"]
     return bech32_prefix
 
-def convert_to_juno_address(chain: str, address: str) -> str:
-    decoded_juno = Bech32Decoder.Decode(chain, address)
-    return Bech32Encoder.Encode("juno", decoded_juno)
-
 
 def convert_assets_data(assets: List[Dict]) -> Dict:
     res_dict = {
