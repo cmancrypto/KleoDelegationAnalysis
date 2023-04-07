@@ -3,10 +3,10 @@ import pandas as pd
 from delegatorSnapshotUtils import getValidatorDelegationResponseFromAPI, getDelegatorsAndConvert, snapshotDelegatorsUsingAPI, createComparisonDelegatorDataFrame
 import utils 
 import time
-from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY,validator_address
+from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY
 from cosmpy.aerial.client import LedgerClient, NetworkConfig
 
-##this queries the API for source chain to determine who is delegating to Kleomedes validator on Source Chain (requires having validator address in constants.py)
+##this queries the API for source chain to determine who is delegating to Kleomedes validator on Source Chain 
 ##then converts the address to the chain to analyse address format (only works for BECH32 normal conversions, INJ so far is rekt, use publicKeyUtils for this)
 ##queries chain to analyse and gets ALL accounts on the chain, checks if the address to analyse is part of the accounts in chain 
 ##then returns DELEGATED tokens of the chain (not balance held) for each address from the source chain that was delegated to Kleo 
