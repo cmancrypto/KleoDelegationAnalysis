@@ -2,7 +2,10 @@ import requests
 import pandas as pd
 import json
 import utils
-from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY,validator_address
+from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY
+
+
+
 
 def snapshotDelegatorsUsingAPI(url: str, createcsv: bool = False):
     #bool doesn't work yet - too lazy
@@ -55,6 +58,8 @@ def getValidatorDelegationResponseFromAPI(sourcechain):
     delegation_response=snapshotDelegatorsUsingAPI(url)
     return delegation_response
 
+
+##returns the validator addresses reading a pre-built validatorlist.json
 def getValidatorAddress(chain):
     with open("validatorlist.json", 'r') as f:
         data = json.load(f)
