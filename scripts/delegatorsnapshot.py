@@ -4,6 +4,13 @@ import pandas as pd
 import os
 import json
 
+#this script will do a snapshot of all validators
+#it will query a pre-generated "validator.json" file which contains all of the validators that Kleomedes has (can be re-generated using getValidator.py)
+#snapChainList takes this list of chains and queries each of them saving a snapshot and putting into the log file (csv and json) details of the snapshot so it can be recalled later for data analysis
+#created by Cman
+
+
+
 def takeSnapshot(chain):
     df=getDelegatorsAndConvert(chain)
     now = datetime.now()
