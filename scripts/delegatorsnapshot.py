@@ -20,13 +20,15 @@ def takeSnapshot(chain):
     return [filename, chain, df]
 
 
-def logSnapshot(filename,chain):
+def logSnapshot(filename,chain,sum,countdelegators):
     # Log the filename and date
     log_filename = 'log.csv'
     log_df = pd.DataFrame({
         'filename': [filename],
     'date': [date.today()],
-    "chain": [chain]
+    "chain": [chain],
+    "tokensum": sum,
+    "countdelegators": countdelegators
     })
     log_df.to_csv(log_filename, index=False, mode='a', header=not os.path.exists(log_filename))
 
@@ -34,7 +36,9 @@ def logSnapshot(filename,chain):
 def takeSnapshotandLog(chaintosnap):
     try: 
         [filename,chain,df]=takeSnapshot(chaintosnap)
-        logSnapshot(filename,chain)
+        sum=df["value"].sum()
+        countdelegators=len(df["value"])
+        logSnapshot(filename,chain,sum,countdelegators)
         success=True
     except Exception as e: 
         print(e)
@@ -45,6 +49,7 @@ def takeSnapshotandLog(chaintosnap):
 def snapChainList(list_of_chains):
     for chain in list_of_chains:
         try:
+            print(chain)
             takeSnapshotandLog(chain)
         except Exception as e: 
             print(f"error:{e} on {chain}")
