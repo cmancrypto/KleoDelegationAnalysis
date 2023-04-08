@@ -48,8 +48,8 @@ def takeSnapshotandLog(chaintosnap):
 
 def snapChainList(list_of_chains):
     for chain in list_of_chains:
+        print(chain)
         try:
-            print(chain)
             takeSnapshotandLog(chain)
         except Exception as e: 
             print(f"error:{e} on {chain}")
