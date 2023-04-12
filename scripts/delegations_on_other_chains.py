@@ -1,3 +1,4 @@
+import os
 
 import pandas as pd
 
@@ -14,14 +15,16 @@ from delegatorSnapshotUtils import getDelegatorsAndConvert, \
 
 
 def main(sourcechain, chaintoanalyse):
-    dfcomparison = compareDelegatorsWithAnalysisChain(sourcechain, chaintoanalyse)
-    chain_addresses = dfcomparison["address"]
+    df_comparison = compare_delegators_with_analysis_chain(sourcechain, chaintoanalyse)
+    chain_addresses = df_comparison["address"]
     print(f"Querying {sourcechain} delegators to Kleomedes balances on {chaintoanalyse}")
-    ##chainBalancesByAddress=queryDelegatedBalancesByAddressList(chain_addresses,ledgerclient) ##has issues with injectives long int()
-    chainBalancesByAddress = queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse)
-    df = pd.DataFrame(chainBalancesByAddress)
+    chain_balances_by_address = queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse)
+    df = pd.DataFrame(chain_balances_by_address)
     print(df.columns)
-    df.to_csv(f"results/{sourcechain}balancesOn{chaintoanalyse}.csv")
+    parent_dir = utils.get_parent_dir()
+    filename = f"{sourcechain}balancesOn{chaintoanalyse}.csv"
+    full_path = os.path.join(parent_dir, "results", filename)
+    df.to_csv(full_path)
     sum_column = df.iloc[:, 0].sum()
     return sum_column, df
 
@@ -75,20 +78,20 @@ def queryGetAllAccounts(chaintoanalyse):
     return response.json()
 
 
-def compareDelegatorsWithAnalysisChain(sourcechain, chaintoAnalyse):
+def compare_delegators_with_analysis_chain(sourcechain, chaintoAnalyse):
     response = queryGetAllAccounts(chaintoAnalyse)["accounts"]
-    accountsOnChain = []
+    accounts_on_chain = []
     ##so far, injective accounts are treated differently to akash - unsure if all same. BaseAcccount is for Akash, Injective is EthAccount
     for accounts in response:
         if accounts["@type"] == "/cosmos.auth.v1beta1.BaseAccount":
             try:
-                accountsOnChain.append(accounts["address"])
+                accounts_on_chain.append(accounts["address"])
             except Exception as e:
                 print(f"exception{e}")
         elif accounts["@type"] == "/injective.types.v1beta1.EthAccount" or accounts[
             "@type"] == "/ethermint.types.v1.EthAccount":
             try:
-                accountsOnChain.append(accounts["base_account"]["address"])
+                accounts_on_chain.append(accounts["base_account"]["address"])
             except Exception as e:
 
                 print(f"exception{e}")
@@ -99,13 +102,13 @@ def compareDelegatorsWithAnalysisChain(sourcechain, chaintoAnalyse):
             except Exception as e:
                 print(e)
 
-    dfAccountsOnChain = pd.DataFrame(accountsOnChain, columns=["address"])
+    df_accounts_on_chain = pd.DataFrame(accounts_on_chain, columns=["address"])
 
-    dfDelegators = getDelegatorsAndConvert(sourcechain)
+    df_delegators = getDelegatorsAndConvert(sourcechain)
 
-    chain_addresses = getChainToAnalyseAddresses(sourcechain, chaintoAnalyse, dfDelegators)
-    dfchain_addresses = pd.DataFrame(chain_addresses, columns=["address"])
-    comparison = createComparisonDelegatorDataFrame(dfAccountsOnChain, dfchain_addresses)
+    chain_addresses = getChainToAnalyseAddresses(sourcechain, chaintoAnalyse, df_delegators)
+    df_chain_addresses = pd.DataFrame(chain_addresses, columns=["address"])
+    comparison = createComparisonDelegatorDataFrame(df_accounts_on_chain, df_chain_addresses)
     print(f"{len(comparison)} addresses found in {chaintoAnalyse} with delegations to Kleomedes in {sourcechain}")
     return comparison
 
@@ -126,4 +129,6 @@ if __name__ == "__main__":
     print(sums)
     print(failures)
     df = pd.DataFrame(sums)
-    df.to_csv(f"results/allChainSumsFromJunoDelegators.csv")
+    parent_dir = utils.get_parent_dir()
+    full_path = os.path.join(parent_dir, "results/allChainSumsFromJunoDelegators.csv")
+    df.to_csv(full_path)
