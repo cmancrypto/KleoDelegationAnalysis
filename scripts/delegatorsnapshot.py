@@ -1,48 +1,54 @@
 from delegatorSnapshotUtils import getValidatorDelegationResponseFromAPI, getDelegatorsAndConvert
-from datetime import datetime, date 
+from datetime import datetime, date
 import pandas as pd
 import os
 import json
+import utils
 
-#this script will do a snapshot of all validators
-#it will query a pre-generated "validator.json" file which contains all of the validators that Kleomedes has (can be re-generated using getValidator.py)
-#snapChainList takes this list of chains and queries each of them saving a snapshot and putting into the log file (csv and json) details of the snapshot so it can be recalled later for data analysis
-#created by Cman
 
+# this script will do a snapshot of all validators
+# it will query a pre-generated "validator.json" file which contains all of the validators that Kleomedes has (can be re-generated using getValidator.py)
+# snapChainList takes this list of chains and queries each of them saving a snapshot and putting into the log file (csv and json) details of the snapshot so it can be recalled later for data analysis
+# created by Cman
 
 
 def takeSnapshot(chain):
-    df=getDelegatorsAndConvert(chain)
+    df = getDelegatorsAndConvert(chain)
     now = datetime.now()
     date_time = now.strftime('%Y-%m-%d_%H-%M-%S')
-    filename=f"./snapshots/{chain}{date_time}.csv"
-    df.to_csv(filename, index=False)
+    parent_dir = utils.get_parent_dir()
+    filename = f"{chain}{date_time}.csv"
+    full_path = os.path.join(parent_dir, "snapshots", filename)
+    df.to_csv(full_path, index=False)
     return [filename, chain, df]
 
 
-def logSnapshot(filename,chain,sum,countdelegators):
+def logSnapshot(filename, chain, sum, count_delegators):
     # Log the filename and date
     log_filename = 'log.csv'
+    parent_dir=utils.get_parent_dir()
+    full_path=os.path.join(parent_dir,log_filename)
     log_df = pd.DataFrame({
         'filename': [filename],
-    'date': [date.today()],
-    "chain": [chain],
-    "tokensum": sum,
-    "countdelegators": countdelegators
+        'date': [date.today()],
+        "chain": [chain],
+        "tokensum": sum,
+        "count_delegators": count_delegators
     })
-    log_df.to_csv(log_filename, index=False, mode='a', header=not os.path.exists(log_filename))
+    log_df.to_csv(full_path, index=False, mode='a', header=not os.path.exists(log_filename))
+
 
 ##define a function to do the snapshot and then log it, wrapped in try except and returns a success parameter
-def takeSnapshotandLog(chaintosnap):
-    try: 
-        [filename,chain,df]=takeSnapshot(chaintosnap)
-        sum=df["value"].sum()
-        countdelegators=len(df["value"])
-        logSnapshot(filename,chain,sum,countdelegators)
-        success=True
-    except Exception as e: 
+def take_snapshot_and_log(chain_to_snap):
+    try:
+        [filename, chain, df] = takeSnapshot(chain_to_snap)
+        sum = df["value"].sum()
+        countdelegators = len(df["value"])
+        logSnapshot(filename, chain, sum, countdelegators)
+        success = True
+    except Exception as e:
         print(e)
-        success=False
+        success = False
     return success
 
 
@@ -50,18 +56,19 @@ def snapChainList(list_of_chains):
     for chain in list_of_chains:
         print(chain)
         try:
-            takeSnapshotandLog(chain)
-        except Exception as e: 
+            take_snapshot_and_log(chain)
+        except Exception as e:
             print(f"error:{e} on {chain}")
 
+
 def getChainList(path):
-    with open(path,"r") as f: 
-        data=json.load(f)
-    chain_list=list(data.keys())
+    with open(utils.get_absolute_parent_file_path(path), "r") as f:
+        data = json.load(f)
+    chain_list = list(data.keys())
     return chain_list
 
 
 if __name__ == "__main__":
     ##can create new validator list if reqd out of get getValidator.py
-    chainlist=getChainList("validatorlist.json")
+    chainlist = getChainList("validatorlist.json")
     snapChainList(chainlist)
