@@ -1,9 +1,11 @@
-from delegatorSnapshotUtils import getValidatorDelegationResponseFromAPI, getDelegatorsAndConvert
-from datetime import datetime, date
-import pandas as pd
-import os
 import json
+import os
+from datetime import datetime, date
+
+import pandas as pd
+
 import utils
+from delegatorSnapshotUtils import getDelegatorsAndConvert
 
 
 # this script will do a snapshot of all validators
@@ -12,7 +14,7 @@ import utils
 # created by Cman
 
 
-def takeSnapshot(chain):
+def take_snapshot(chain):
     df = getDelegatorsAndConvert(chain)
     now = datetime.now()
     date_time = now.strftime('%Y-%m-%d_%H-%M-%S')
@@ -26,8 +28,8 @@ def takeSnapshot(chain):
 def logSnapshot(filename, chain, sum, count_delegators):
     # Log the filename and date
     log_filename = 'log.csv'
-    parent_dir=utils.get_parent_dir()
-    full_path=os.path.join(parent_dir,log_filename)
+    parent_dir = utils.get_parent_dir()
+    full_path = os.path.join(parent_dir, log_filename)
     log_df = pd.DataFrame({
         'filename': [filename],
         'date': [date.today()],
@@ -41,7 +43,7 @@ def logSnapshot(filename, chain, sum, count_delegators):
 ##define a function to do the snapshot and then log it, wrapped in try except and returns a success parameter
 def take_snapshot_and_log(chain_to_snap):
     try:
-        [filename, chain, df] = takeSnapshot(chain_to_snap)
+        [filename, chain, df] = take_snapshot(chain_to_snap)
         sum = df["value"].sum()
         countdelegators = len(df["value"])
         logSnapshot(filename, chain, sum, countdelegators)
