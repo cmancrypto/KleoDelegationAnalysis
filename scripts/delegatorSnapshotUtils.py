@@ -25,8 +25,8 @@ def convertDelegationResponseToDataFrame(data) -> pd.DataFrame:
         value = dicts["delegation"]["shares"]
         address_value_dict = {"address": address, "value": value}
         delegators.append(address_value_dict)
-    dfDelegators = pd.DataFrame(delegators)
-    return dfDelegators
+    df_delegators = pd.DataFrame(delegators)
+    return df_delegators
 
 
 def convertStrValuestoFloatValues(dfDelegators):
