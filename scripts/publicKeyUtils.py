@@ -14,8 +14,7 @@ import pandas as pd
 
 def getDelegatorsPublicKeysToCSV(sourcechain):
     dfDelegators = delegations_on_other_chains.getDelegatorsAndConvert(sourcechain)
-    response = delegations_on_other_chains.queryGetAllAccounts(sourcechain)
-    accounts = response["accounts"]
+    accounts = delegations_on_other_chains.queryGetAllAccounts(sourcechain)
 
     with open('input.csv', 'w', newline="") as csvfile:
         # Create CSV writer object
@@ -62,7 +61,7 @@ def importCSVCheckBalances(chaintoanalyse):
     chain_addresses = addresses
 
     # get all of the addresses on the chain - so we can check if the converted addresses are even there.
-    allAddresses = delegations_on_other_chains.queryGetAllAccounts(chaintoanalyse)["accounts"]
+    allAddresses = delegations_on_other_chains.queryGetAllAccounts(chaintoanalyse)
     accountsOnChain = []
     for accounts in allAddresses:
         if accounts["@type"] == "/cosmos.auth.v1beta1.BaseAccount":

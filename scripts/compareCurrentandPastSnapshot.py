@@ -1,13 +1,13 @@
 import requests
 import pandas as pd
 import json
-import delegatorSnapshotUtils as helper
+import delegator_snapshot_utils as helper
 
 
 def main():
     ##read API for current snapshot
     url = "https://juno-api.kleomedes.network/cosmos/staking/v1beta1/validators/junovaloper1x8u2ypdr35802tjyjqyxan8x85fzxe6sk0qmh8/delegations?pagination.limit=50000"
-    current_delegation_response = helper.snapshotDelegatorsUsingAPI(url)
+    current_delegation_response = helper.snapshot_delegators_using_API(url)
     dfCurrentDelegators = helper.convertJSONtoDataFrame(current_delegation_response)
 
     ##read the json for historical snapshot

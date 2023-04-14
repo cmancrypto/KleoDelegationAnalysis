@@ -5,7 +5,7 @@ from datetime import datetime, date
 import pandas as pd
 
 import utils
-from delegatorSnapshotUtils import getDelegatorsAndConvert
+from delegator_snapshot_utils import getDelegatorsAndConvert
 
 
 # this script will do a snapshot of all validators
@@ -37,7 +37,7 @@ def logSnapshot(filename, chain, sum, count_delegators):
         "tokensum": sum,
         "count_delegators": count_delegators
     })
-    log_df.to_csv(full_path, index=False, mode='a', header=not os.path.exists(log_filename))
+    log_df.to_csv(full_path, index=False, mode='a', header=not os.path.exists(full_path))
 
 
 ##define a function to do the snapshot and then log it, wrapped in try except and returns a success parameter
@@ -54,13 +54,17 @@ def take_snapshot_and_log(chain_to_snap):
     return success
 
 
-def snapChainList(list_of_chains):
+def snapChainList(list_of_chains, excluded_chains: list):
     for chain in list_of_chains:
-        print(chain)
-        try:
-            take_snapshot_and_log(chain)
-        except Exception as e:
-            print(f"error:{e} on {chain}")
+        print(f"trying to snapshot {chain}")
+        if chain not in excluded_chains:
+            try:
+                take_snapshot_and_log(chain)
+                print(f"snapshot of: {chain} success")
+            except Exception as e:
+                print(f"error:{e} on {chain}")
+        else:
+            print(f"{chain} is on excluded list")
 
 
 def getChainList(path):
@@ -73,4 +77,5 @@ def getChainList(path):
 if __name__ == "__main__":
     ##can create new validator list if reqd out of get getValidator.py
     chainlist = getChainList("validatorlist.json")
-    snapChainList(chainlist)
+    print(chainlist)
+    snapChainList(chainlist, excluded_chains=["cosmoshub"])

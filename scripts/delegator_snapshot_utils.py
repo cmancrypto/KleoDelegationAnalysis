@@ -5,10 +5,8 @@ import utils
 from constants import COSMOS_DIR_API, COSMOS_DIR_REST_PROXY
 
 
-def snapshotDelegatorsUsingAPI(url: str, createcsv: bool = False):
-    # bool doesn't work yet - too lazy
-    response = utils.get_API_data_with_retry(url)
-    delegation_responses = response.json()["delegation_responses"]
+def snapshot_delegators_using_API(url: str):
+    delegation_responses = get_all_pages_of_key_from_API_response(url=url, key_to_return="delegation_responses")
     return delegation_responses
 
 
@@ -56,10 +54,10 @@ def convertJSONtoDataFrame(delegation_responses):
 def getValidatorDelegationResponseFromAPI(sourcechain):
     validatoraddress = getValidatorAddress(sourcechain)
     api = utils.getAPIURl(sourcechain)
-    ##pagination here may be an issue eventually
-    query = f"/cosmos/staking/v1beta1/validators/{validatoraddress}/delegations?pagination.limit=50000"
+    # pagination fixed
+    query = f"/cosmos/staking/v1beta1/validators/{validatoraddress}/delegations?pagination.limit=1000"
     url = f"{api}{query}"
-    delegation_response = snapshotDelegatorsUsingAPI(url)
+    delegation_response = snapshot_delegators_using_API(url)
     return delegation_response
 
 
@@ -80,3 +78,37 @@ def getDelegatorsAndConvert(chain):
     delegation_response = getValidatorDelegationResponseFromAPI(chain)
     dfDelegators = convertJSONtoDataFrame(delegation_response)
     return dfDelegators
+
+
+def get_all_pages_of_key_from_API_response(url, key_to_return: str) -> list:
+    """
+
+    :param url: API response url
+    :param key_to_return: the desired Key from the API response to return i.e "accounts" or "delegation_responses"
+    :return: array of responses from the API
+    """
+    # set up pagination_key to iterate through all the responses
+    pagination_key = None
+    # create empty delegations_responses
+    key_to_return_responses = []
+    # create infinite loop to evaluate pagination key
+    while True:
+        # set API query params
+        params = {"pagination.key": pagination_key}
+        # return response
+        response = utils.get_API_data_with_retry(url, params=params)
+        # check if response is valid, this should be certain with "retry" but to be sure
+        if response.status_code == 200:
+            # add response to the list
+            key_to_return_responses.extend(response.json()[key_to_return])
+        # check if there is "pagination" and "next_key" in the response
+        if 'pagination' in response.json() and 'next_key' in response.json()["pagination"]:
+            # if next key value is None - break
+            if response.json()["pagination"]["next_key"] is None:
+                break
+            pagination_key = response.json()["pagination"]["next_key"]
+            params = {"pagination.key": pagination_key}
+        else:
+            print("break")
+            break
+    return key_to_return_responses

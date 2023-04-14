@@ -3,8 +3,8 @@ import os
 import pandas as pd
 
 import utils
-from delegatorSnapshotUtils import getDelegatorsAndConvert, \
-    snapshotDelegatorsUsingAPI, createComparisonDelegatorDataFrame
+from delegator_snapshot_utils import getDelegatorsAndConvert, \
+    snapshot_delegators_using_API, createComparisonDelegatorDataFrame, get_all_pages_of_key_from_API_response
 
 
 ##this queries the API for source chain to determine who is delegating to Kleomedes validator on Source Chain
@@ -48,7 +48,7 @@ def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
         print(f"{index} of {len(chain_addresses)}")
         url = f"{api}/cosmos/staking/v1beta1/delegations/{address}"
         try:
-            delegation_response = snapshotDelegatorsUsingAPI(url)
+            delegation_response = snapshot_delegators_using_API(url)
             sum_delegator = 0
             if len(delegation_response) >= 0:
                 for delegations in delegation_response:
@@ -63,23 +63,19 @@ def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
 
 
 def queryGetAllAccounts(chaintoanalyse):
-    ##this would be much better with using seed until it runs out
     api = utils.getAPIURl(chaintoanalyse)
-    url = f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=500000"
-    print(url)
+    url = f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=1000"
     try:
-        response = utils.get_API_data_with_retry(url)
-        print(response.raise_for_status())
+        # returns the response["accounts"] - has full retry and handles pagination
+        accounts = get_all_pages_of_key_from_API_response(url, "accounts")
     except Exception as e:
-        print(f"{chaintoanalyse} didn't accept long query")
-        ##some chains don't like the long query - this only does first 30k - doesn't check length
-        url = f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=30000"
-        response = utils.get_API_data_with_retry(url)
-    return response.json()
+        print(e)
+        return None
+    return accounts
 
 
 def compare_delegators_with_analysis_chain(sourcechain, chaintoAnalyse):
-    response = queryGetAllAccounts(chaintoAnalyse)["accounts"]
+    response = queryGetAllAccounts(chaintoAnalyse)
     accounts_on_chain = []
     ##so far, injective accounts are treated differently to akash - unsure if all same. BaseAcccount is for Akash, Injective is EthAccount
     for accounts in response:

@@ -83,10 +83,10 @@ def convert_assets_data(assets: List[Dict]) -> Dict:
     return res_dict
 
 
-def get_API_data_with_retry(url, retries=10, delay=5):
+def get_API_data_with_retry(url, retries=10, delay=5, params=None):
     for i in range(retries):
         try:
-            response = requests.get(url)
+            response = requests.get(url, params=params)
             if response.status_code == 200:
                 return response
         except requests.exceptions.RequestException as e:
