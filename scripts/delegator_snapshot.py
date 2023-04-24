@@ -54,7 +54,7 @@ def take_snapshot_and_log(chain_to_snap):
     return success
 
 
-def snapChainList(list_of_chains, excluded_chains: list | None):
+def snapChainList(list_of_chains, excluded_chains: list):
     for chain in list_of_chains:
         print(f"trying to snapshot {chain}")
         if chain not in excluded_chains:

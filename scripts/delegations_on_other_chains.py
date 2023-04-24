@@ -6,6 +6,7 @@ import utils
 from delegator_snapshot_utils import getDelegatorsAndConvert, \
     snapshot_delegators_using_API, createComparisonDelegatorDataFrame, get_all_pages_of_key_from_API_response
 
+import get_chain_list
 
 ##this queries the API for source chain to determine who is delegating to Kleomedes validator on Source Chain
 ##then converts the address to the chain to analyse address format (only works for BECH32 normal conversions, INJ so far is rekt, use publicKeyUtils for this)
@@ -64,7 +65,7 @@ def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
 
 def queryGetAllAccounts(chaintoanalyse):
     api = utils.getAPIURl(chaintoanalyse)
-    url = f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=1000"
+    url = f"{api}/cosmos/auth/v1beta1/accounts?pagination.limit=10000"
     try:
         # returns the response["accounts"] - has full retry and handles pagination
         accounts = get_all_pages_of_key_from_API_response(url, "accounts")
@@ -91,12 +92,12 @@ def compare_delegators_with_analysis_chain(sourcechain, chaintoAnalyse):
             except Exception as e:
 
                 print(f"exception{e}")
-        else:
-            print("Account [@type] doesn't match existing schema for:")
-            try:
-                print(accounts["@type"])
-            except Exception as e:
-                print(e)
+        #else:
+            #print("Account [@type] doesn't match existing schema for:")
+            #try:
+                #print(accounts["@type"])
+            #except Exception as e:
+                #print(e)
 
     df_accounts_on_chain = pd.DataFrame(accounts_on_chain, columns=["address"])
 
@@ -112,13 +113,22 @@ def compare_delegators_with_analysis_chain(sourcechain, chaintoAnalyse):
 if __name__ == "__main__":
     # chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]
     # chains=["akash"]
-    chains = ["cudos"]
+    chains=get_chain_list.get_chain_list()
+    exclusion_list=["juno", "evmos","canto","injective","cosmoshub","cronos","cryptoorgchain","osmosis","secret","terra","terra2","thorchain","acrechain","akash", "8ball"]
+    for chain in exclusion_list: 
+        print(f"removing{chain}")
+        try:
+            chains.remove(chain)
+        except Exception as e: 
+            print(e)
     sums = []
     failures = []
     for chain in chains:
+        print(chain)
         try:
             [sum, df] = main("juno", chain)
             sums.append([sum, chain])
+            print(sums)
         except Exception as e:
             print(e)
             failures.append(chain)
