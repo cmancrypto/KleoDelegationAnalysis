@@ -3,7 +3,7 @@ import pandas as pd
 import utils 
 import json
 
-def get_chain_slip():
+def get_chain_slip(make_csv: bool = False) -> list:
     chainlist=[]
 
     # Define the URL for the chains list page
@@ -30,9 +30,12 @@ def get_chain_slip():
             slip44 = None; 
         chainlist.append({f"{chain_id}":slip44})
     
-    with open('chainslip.json', 'w') as f:
-        json.dump(chainlist, f)
-    
+    if make_csv==True:
+        with open('chainslip.json', 'w') as f:
+            json.dump(chainlist, f)
+        
     return(chainlist)
 
-get_chain_slip()
+
+if __name__ == "__main__":
+    get_chain_slip(make_csv=True)

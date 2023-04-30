@@ -8,6 +8,7 @@ from delegator_snapshot_utils import getDelegatorsAndConvert, \
 
 import get_chain_list
 
+
 ##this queries the API for source chain to determine who is delegating to Kleomedes validator on Source Chain
 ##then converts the address to the chain to analyse address format (only works for BECH32 normal conversions, INJ so far is rekt, use publicKeyUtils for this)
 ##queries chain to analyse and gets ALL accounts on the chain, checks if the address to analyse is part of the accounts in chain 
@@ -110,12 +111,24 @@ def compare_delegators_with_analysis_chain(sourcechain, chaintoAnalyse):
     return comparison
 
 
+def get_slip_44(chain_name):
+        chainurl=f"https://chains.cosmos.directory/{chain_name}/chain"
+        response = utils.get_API_data_with_retry(chainurl)
+        try:
+            slip44=response.json()["slip44"]
+        except Exception as e: 
+            slip44 = None; 
+        return slip44
+
 if __name__ == "__main__":
     # chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]
     # chains=["akash"]
-    chains=get_chain_list.get_chain_list()
-    exclusion_list=["juno", "evmos","canto","injective","cosmoshub","cronos","cryptoorgchain","osmosis","secret","terra","terra2","thorchain","acrechain","akash", "8ball"]
-    for chain in exclusion_list: 
+    #chains=get_chain_list.get_chain_list()
+    chains=["akash","kava","cerberus"]
+    main_chain="juno"
+    exclusion_list=[main_chain, "evmos","canto","injective","cosmoshub","cronos","cryptoorgchain","osmosis","secret","terra","terra2","thorchain","acrechain", "8ball"]
+    main_chain_slip44=get_slip_44(main_chain)
+    for chain in exclusion_list:
         print(f"removing{chain}")
         try:
             chains.remove(chain)
@@ -123,18 +136,27 @@ if __name__ == "__main__":
             print(e)
     sums = []
     failures = []
+    slip_44_mismatch=[]
+
+
     for chain in chains:
+
+    
         print(chain)
-        try:
-            [sum, df] = main("juno", chain)
-            sums.append([sum, chain])
-            print(sums)
-        except Exception as e:
-            print(e)
-            failures.append(chain)
+        if get_slip_44(chain) == main_chain_slip44: 
+            try:
+                [sum, df] = main(main_chain, chain)
+                sums.append([sum, chain])
+                print(sums)
+            except Exception as e:
+                print(e)
+                failures.append(chain)
+        else: 
+            slip_44_mismatch.append(chain)
+
     print(sums)
     print(failures)
     df = pd.DataFrame(sums)
     parent_dir = utils.get_parent_dir()
-    full_path = os.path.join(parent_dir, "results/allChainSumsFromJunoDelegators.csv")
+    full_path = os.path.join(parent_dir, f"results/allChainSumsFrom{main_chain}Delegators.csv")
     df.to_csv(full_path)
