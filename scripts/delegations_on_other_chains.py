@@ -1,5 +1,5 @@
 import os
-
+import csv
 import pandas as pd
 
 import utils
@@ -119,6 +119,27 @@ def get_slip_44(chain_name):
         except Exception as e: 
             slip44 = None; 
         return slip44
+
+def getValidatorChains():
+    # Open the CSV file
+    with open('validatorlist.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        # Create a list to store the chain values
+        chains = []
+
+        # Iterate through the rows of the CSV file
+        for row in reader:
+            # Get the chain value for the current row
+            chain = row['chain']
+
+            # Add the chain value to the list (if it's not already there)
+            if chain not in chains:
+                chains.append(chain)
+    return chains
+
+
+
 
 if __name__ == "__main__":
     # chains=["sommelier","quicksilver","axelar","osmosis","cosmoshub","shentu","secretnetwork","migaloo","stafihub","nois","carbon","canto",]

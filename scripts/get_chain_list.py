@@ -29,4 +29,5 @@ def get_chain_list():
 
     return(chainlist)
 
-get_chain_list()
+if __name__ == "__main__":
+    get_chain_list()
