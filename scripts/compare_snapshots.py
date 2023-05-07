@@ -13,15 +13,18 @@ def compareaddresstoothersnapshot(addressestocheck: pd.DataFrame, snapshottochec
     df3 = df2[df2['address'].isin(addresses)]
 
     # print out the resulting dataframe
-    print(df3)
 
+    print( "from addresses in list:")
     print(df3["value"].sum())
+    print("sum total delegators:")
     print(df2["value"].sum())
+    print("delegators in address list could delegate:")
+    print(df1["balance"].sum())
     print(len(df3))
     print(len(df1))
 
 
 if __name__ == "__main__":
-    addressestocheck=pd.read_csv('results/junobalancesOnakash.csv', usecols=[1, 2], names=['balance', 'address'])
+    addressestocheck=pd.read_csv('results/allChainDelegatorsakashAddress.csv', usecols=[1, 2], names=['balance', 'address'])
     snapshottocheck = pd.read_csv('snapshots/akash2023-05-01_17-38-01.csv')
     compareaddresstoothersnapshot(addressestocheck,snapshottocheck)
