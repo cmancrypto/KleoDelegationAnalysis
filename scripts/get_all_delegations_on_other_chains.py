@@ -18,7 +18,8 @@ def get_addresses_on_chain_for_all_chains(chain_to_get_addresses : str, chains_t
         failures=[]
         slip_44_mismatch=[]
 
-        chains.remove(chain_to_get_addresses)
+        if chain_to_get_addresses in chains:
+            chains.remove(chain_to_get_addresses)
 
         for chain in chains:
             if chain not in chains_to_ignore:
@@ -47,7 +48,8 @@ def get_addresses_on_chain_for_all_chains(chain_to_get_addresses : str, chains_t
 def get_chains_from_csv(chain_to_get_addresses : str, chains_to_ignore : list = ["cosmoshub"]):
         chains=delegations_on_other_chains.getValidatorChains()
         main_chain_slip44=delegations_on_other_chains.get_slip_44(chain_to_get_addresses)
-        chains.remove(chain_to_get_addresses)
+        if chain_to_get_addresses in chains:
+            chains.remove(chain_to_get_addresses)
         dfs=[]
         for chain in chains:
             if chain not in chains_to_ignore:
@@ -71,5 +73,5 @@ def get_chains_from_csv(chain_to_get_addresses : str, chains_to_ignore : list = 
         print(combined_df)
 
 if __name__ == "__main__":
-
+    #get_addresses_on_chain_for_all_chains("sommelier")
     get_chains_from_csv("akash")
