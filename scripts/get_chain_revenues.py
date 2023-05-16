@@ -70,7 +70,7 @@ def get_validator_address(chain: str,validator_list : list[dict]):
             return validator["operator_address"]
 
 
-def get_chain_revenues(chains : list, date : str = datetime.now().strftime("%y-%m-%d") ) -> list:
+def get_chain_revenues(chains : list, date : str = datetime.now().strftime("%y-%m-%d"), manual_apr_chains : list = []) -> list:
     chain_revenues=[]
     failed_chains=[]
 
@@ -102,8 +102,12 @@ def get_chain_revenues(chains : list, date : str = datetime.now().strftime("%y-%
             price=get_prices_from_cosmos_api(chain_data)
             value_delegated=amount_sum*price
             print(f"value delegated is {value_delegated}")
-            #get the staking APR 
-            staking_apr=get_staking_apr(chain_data)
+            #get the staking APR
+            manual_apr= check_manual_staking_apr(chain,manual_apr_chains)
+            if manual_apr == None:
+                staking_apr=get_staking_apr(chain_data)
+            else:
+                staking_apr=manual_apr
             print(f"staking_apr is {staking_apr}")
             #get the validator share
             #get the correct validator first
@@ -136,6 +140,11 @@ def get_chain_shares_formatted(chain_revenues : list, ukleo_to_split: float) -> 
     print(formatted_df.to_dict('records'))
     return formatted_df.to_dict('records')
 
+def check_manual_staking_apr(string, manual_apr_chains : list):
+    for dictionary in manual_apr_chains:
+        if "name" in dictionary and dictionary["name"]== string: 
+            return dictionary["apr"]
+    
 
 def get_decimals(chain : str):
     url=f"https://chains.cosmos.directory/{chain}"
@@ -158,17 +167,35 @@ def get_formatted_buyback_params_json(chain_shares_formatted : list, write_json_
     
 
 
-def main(chainlist : list, date: str, ukleo_distribution_amt):
-        revenues = get_chain_revenues(chainlist,date)
+def main(chainlist : list, date: str, ukleo_distribution_amt, manual_apr_chains: list):
+        revenues = get_chain_revenues(chainlist,date,manual_apr_chains)
         chain_shares_formatted=get_chain_shares_formatted(revenues,ukleo_distribution_amt)
         buyback_params=get_formatted_buyback_params_json(chain_shares_formatted)
         #print(buyback_params)
         return buyback_params
 
 
+
+
+
+class ManualAPR: 
+
+    def __init__(self, name, apr):
+        self.name= name
+        self.apr= apr 
+
+    def to_dict(self):
+        return {
+            "name" : self.name, 
+            "apr" : self.apr
+        }
+
+
 if __name__ == "__main__":
     chainlist= ["juno","rebus","teritori","jackal","persistence","stride","chihuahua","shentu","kujira","fetchhub","cudos","migaloo"]
-    buyback_params=main(chainlist, "2023-04-30", 525290*1E6)
+    manual_apr_chains = [ManualAPR("jackal",0.30).to_dict(),ManualAPR("kujira",0.01).to_dict(),ManualAPR("cudos",0.08).to_dict(),ManualAPR("stride",0.10).to_dict()]
+    print(manual_apr_chains)
+    buyback_params=main(chainlist, "2023-04-30", 525290*1E6,manual_apr_chains)
     df=pd.DataFrame(buyback_params["buyback_params"])
     print(df["cw20_allocation"].sum())
     df.to_csv("buyback_params.csv")
