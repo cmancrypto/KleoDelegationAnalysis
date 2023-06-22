@@ -8,6 +8,7 @@ def get_snapshot_df_list(chain_name : str, list_of_dates : list) -> list[pd.Data
     snapshot_df_list=[]
     for date in list_of_dates:
         data=get_delegator_list(chain_name,date)
+        ##todo - need to make sure that we can handle returning empty delegator list with an actual error rather that just a failed merge
         delegators=data["delegators"]
         snapshot_df=pd.DataFrame(delegators)
         snapshot_df_list.append(snapshot_df)
