@@ -44,7 +44,8 @@ def get_delegator_list(chain_name : str, date : str):
     if response.status_code ==200:
         data= response.json()
         return data
-    else: 
+    else:
+        print(f"error on {date}")
         return None
 
 #todo finish and validator commission
