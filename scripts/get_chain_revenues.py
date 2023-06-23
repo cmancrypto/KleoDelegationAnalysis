@@ -5,6 +5,7 @@ import tenacity
 from datetime import datetime
 import pandas as pd
 import json
+import numpy as np
 
 @tenacity.retry(stop=tenacity.stop_after_delay(10))
 def get_chain_data(chain: str):
@@ -137,6 +138,8 @@ def get_chain_shares_formatted(chain_revenues : list, ukleo_to_split: float) -> 
     total_value=revenue_df["revenue"].sum()
     revenue_df["share"]=revenue_df["revenue"]/total_value
     revenue_df["cw20_allocation"]=revenue_df["share"]*ukleo_to_split
+    revenue_df["cw20_allocation"]=revenue_df["cw20_allocation"].round(0)
+    revenue_df["cw20_allocation"] = revenue_df["cw20_allocation"].astype(np.int64)
     formatted_df=revenue_df.drop(labels=["revenue","share"], axis=1)
     print(formatted_df.to_dict('records'))
     return formatted_df.to_dict('records')
@@ -196,7 +199,7 @@ if __name__ == "__main__":
     chainlist= ["juno","rebus","teritori","jackal","persistence","stride","chihuahua","shentu","kujira","fetchhub","cudos","migaloo"]
     manual_apr_chains = [ManualAPR("jackal",0.30).to_dict(),ManualAPR("kujira",0.01).to_dict(),ManualAPR("cudos",0.08).to_dict(),ManualAPR("stride",0.10).to_dict()]
     print(manual_apr_chains)
-    buyback_params=main(chainlist, "2023-04-30", 525290*1E6,manual_apr_chains)
+    buyback_params=main(chainlist, "2023-05-30", 525290*1E6,manual_apr_chains)
     df=pd.DataFrame(buyback_params["buyback_params"])
     print(df["cw20_allocation"].sum())
     df.to_csv("buyback_params.csv")

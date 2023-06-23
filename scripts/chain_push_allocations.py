@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import requests
 from get_chain_revenues import get_delegator_list
+import numpy as np
 
 def get_snapshot_df_list(chain_name : str, list_of_dates : list) -> list[pd.DataFrame]:
     snapshot_df_list=[]
@@ -46,6 +47,7 @@ def get_shares(merge_df):
 def get_kleo_alloc(merge_df_shares, total_ukleo_alloc):
     merge_df_shares["ukleo"]=merge_df_shares["shares"]*total_ukleo_alloc
     merge_df_shares["ukleo"]=merge_df_shares["ukleo"].round(0)
+    merge_df_shares["ukleo"] = merge_df_shares["ukleo"].astype(np.int64)
     formatted_df=merge_df_shares[["address","ukleo"]]
     return formatted_df
 
@@ -70,5 +72,4 @@ if __name__ == "__main__":
     get_kleo_allocations_from_push_snapshots("akash",["2023-04-21","2023-04-28","2023-05-04","2023-05-20","2023-05-27","2023-06-03","2023-06-10","2023-06-16"],int(425000*1E6))
 
 
-#### "2023-05-06","2023-05-12","2023-05-19","2023-05-26","2023-06-02","2023-06-09", "2023-06-16"
 
