@@ -1,11 +1,14 @@
 import os
 import requests
 from dotenv import load_dotenv
+from utils import convert_address_to_address
 import tenacity
 from datetime import datetime
 import pandas as pd
 import json
 import numpy as np
+from delegations_on_other_chains import get_delegated_amount_by_address
+
 
 @tenacity.retry(stop=tenacity.stop_after_delay(10))
 def get_chain_data(chain: str):
@@ -129,6 +132,62 @@ def get_chain_revenues(chains : list, date : str = datetime.now().strftime("%y-%
         except Exception as e:
             print(e)
             failed_chains.append([chain,e])
+    print("failed chains are: ")
+    print(failed_chains)
+    return chain_revenues
+
+def get_validator_self_stake(chain,validator_address):
+    url= f"https://rest.cosmos.directory/{chain}"
+    chain_validator_prefix=f"{chain}valoper"
+    converted_address=convert_address_to_address(chain_validator_prefix,validator_address,chain)
+    self_stake=get_delegated_amount_by_address(url,converted_address)
+    return self_stake[0]
+
+def get_self_stake_revenues(chains : list, manual_apr_chains : list = []):
+    chain_revenues = []
+    failed_chains = []
+    # get the validator list
+    try:
+        validator_list = get_validator_list()
+    except Exception as e:
+        print("error in validator list")
+        print(e)
+
+        # iterate through the chainlist
+    for chain in chains:
+        try:
+            validator_address = get_validator_address(chain=chain, validator_list=validator_list)
+            raw_amount_sum=get_validator_self_stake(chain,validator_address)
+
+
+            # get the chain_data json for staking APR and Price
+            chain_data = get_chain_data(chain)
+
+            # get the prices
+            decimal_divisor = pow(10, get_decimals(chain))
+            # this adjusts for the decimals in the return and gets it into "denom" for prices
+            amount_sum = raw_amount_sum / decimal_divisor
+            print(f"getting price for {chain}")
+            price = get_prices_from_cosmos_api(chain_data)
+            value_delegated = amount_sum * price
+            print(f"value self delegated is {value_delegated}")
+            # get the staking APR
+            manual_apr = check_manual_staking_apr(chain, manual_apr_chains)
+            if manual_apr == None:
+                staking_apr = get_staking_apr(chain_data)
+            else:
+                staking_apr = manual_apr
+            print(f"staking_apr is {staking_apr}")
+            revenue = float(value_delegated) * float(staking_apr)
+
+            if revenue > 0:
+                chain_dict = {"chain_name": chain,"revenue": revenue}
+                chain_revenues.append(chain_dict)
+            else:
+                failed_chains.append([chain, "revenue is 0"])
+        except Exception as e:
+            print(e)
+            failed_chains.append([chain, e])
     print("failed chains are: ")
     print(failed_chains)
     return chain_revenues

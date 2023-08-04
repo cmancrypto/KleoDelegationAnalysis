@@ -18,9 +18,19 @@ def main(manual_apr_chains: list, date):
     revenues = get_chain_revenues.get_chain_revenues(chains,date, manual_apr_chains)
     return revenues
 
+def main_self_stake_revenues(manual_apr_chains):
+    validator_list = get_chain_revenues.get_validator_list()
+    chainlist = get_all_kleomedes_chains(validator_list)
+    self_stake_revenues=get_chain_revenues.get_self_stake_revenues(chainlist, manual_apr_chains)
+    return self_stake_revenues
+
 if __name__ == "__main__":
     date="2023-07-23"
     manual_apr_chains = [ManualAPR("jackal", 0.30).to_dict(), ManualAPR("kujira", 0.01).to_dict(), ManualAPR("cudos", 0.08).to_dict(), ManualAPR("stride", 0.10).to_dict()]
+    self_stake=main_self_stake_revenues(manual_apr_chains)
+    print(self_stake)
+    df_self_stake=pd.DataFrame(self_stake)
+    df_self_stake.to_csv("selfStakeRevenue.csv")
     revenues=main(manual_apr_chains,date)
     df=pd.DataFrame(revenues)
     df.to_csv("KleoRevenue.csv")
