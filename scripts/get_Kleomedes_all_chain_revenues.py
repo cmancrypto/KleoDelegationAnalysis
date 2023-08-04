@@ -33,6 +33,8 @@ if __name__ == "__main__":
     df_self_stake.to_csv("selfStakeRevenue.csv")
     revenues=main(manual_apr_chains,date)
     df=pd.DataFrame(revenues)
+    revenue_sum=df["revenue"].sum()
     df.to_csv("KleoRevenue.csv")
     print(revenues)
+    print(revenue_sum)
 
