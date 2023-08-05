@@ -25,7 +25,7 @@ def main_self_stake_revenues(manual_apr_chains):
     return self_stake_revenues
 
 if __name__ == "__main__":
-    date="2023-07-23"
+    date="2023-08-03"
     manual_apr_chains = [ManualAPR("jackal", 0.30).to_dict(), ManualAPR("kujira", 0.01).to_dict(), ManualAPR("cudos", 0.08).to_dict(), ManualAPR("stride", 0.10).to_dict()]
     self_stake=main_self_stake_revenues(manual_apr_chains)
     print(self_stake)
@@ -33,8 +33,17 @@ if __name__ == "__main__":
     df_self_stake.to_csv("selfStakeRevenue.csv")
     revenues=main(manual_apr_chains,date)
     df=pd.DataFrame(revenues)
+<<<<<<< Updated upstream
     revenue_sum=df["revenue"].sum()
     df.to_csv("KleoRevenue.csv")
     print(revenues)
     print(revenue_sum)
+=======
+    print(df)
+    revenuetotal=df["revenue"].sum()
+    df.to_csv("KleoRevenue.csv")
+    print(revenues)
+    print(f"total revenue : {revenuetotal}")
+    
+>>>>>>> Stashed changes
 

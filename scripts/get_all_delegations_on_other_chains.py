@@ -13,6 +13,7 @@ def get_addresses_on_chain_for_all_chains(chain_to_get_addresses : str, chains_t
         
         chains=delegations_on_other_chains.getValidatorChains()
         main_chain_slip44=delegations_on_other_chains.get_slip_44(chain_to_get_addresses)
+        print(main_chain_slip44)
         sums=[]
         dfs=[]
         failures=[]
@@ -73,5 +74,5 @@ def get_chains_from_csv(chain_to_get_addresses : str, chains_to_ignore : list = 
         print(combined_df)
 
 if __name__ == "__main__":
-    #get_addresses_on_chain_for_all_chains("sommelier")
-    get_chains_from_csv("akash")
+    get_addresses_on_chain_for_all_chains("stargaze")
+    get_chains_from_csv("stargaze")

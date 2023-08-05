@@ -1,3 +1,3 @@
 import delegator_snapshot
 
-delegator_snapshot.snapChainList(["akash"],[])
+delegator_snapshot.snapChainList(["archway"],[])

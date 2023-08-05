@@ -255,10 +255,10 @@ class ManualAPR:
 
 
 if __name__ == "__main__":
-    chainlist= ["juno","rebus","teritori","jackal","persistence","stride","chihuahua","shentu","kujira","fetchhub","cudos","migaloo"]
+    chainlist= ["juno","rebus","teritori","jackal","persistence","stride","chihuahua","shentu","kujira","fetchhub","cudos","migaloo","akash"]
     manual_apr_chains = [ManualAPR("jackal",0.30).to_dict(),ManualAPR("kujira",0.01).to_dict(),ManualAPR("cudos",0.08).to_dict(),ManualAPR("stride",0.10).to_dict()]
     print(manual_apr_chains)
-    buyback_params=main(chainlist, "2023-05-30", 166267*1E6,manual_apr_chains)
+    buyback_params=main(chainlist, "2023-06-30", 1429657*1E6,manual_apr_chains)
     df=pd.DataFrame(buyback_params["buyback_params"])
     print(df["cw20_allocation"].sum())
     df.to_csv("buyback_params.csv")

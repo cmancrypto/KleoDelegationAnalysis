@@ -25,6 +25,6 @@ def compareaddresstoothersnapshot(addressestocheck: pd.DataFrame, snapshottochec
 
 
 if __name__ == "__main__":
-    addressestocheck=pd.read_csv('results/allChainDelegatorsakashAddress.csv', usecols=[1, 2], names=['balance', 'address'])
-    snapshottocheck = pd.read_csv('snapshots/akash2023-05-06_17-38-01.csv')
+    addressestocheck=pd.read_csv('results/allChainDelegatorsstargazeAddress.csv', usecols=[1, 2], names=['balance', 'address'])
+    snapshottocheck = pd.read_csv('snapshots/stargaze2023-07-19_19-04-44.csv')
     compareaddresstoothersnapshot(addressestocheck,snapshottocheck)
