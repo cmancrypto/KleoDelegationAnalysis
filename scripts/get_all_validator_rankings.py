@@ -72,12 +72,5 @@ def get_list_chains_validator_by_percentile(percentile:int,chains:list):
     with open(f'delegations{percentile}percentile.json', 'w') as f:
             json.dump(all_delegations_at_percentile, f)
 
-<<<<<<< Updated upstream
-
-
-
-
-=======
->>>>>>> Stashed changes
 if __name__ == "__main__":
     get_list_chains_validator_by_percentile(75,["umee","akash","coreum","cudos"])
