@@ -25,8 +25,9 @@ def main_self_stake_revenues(manual_apr_chains):
     return self_stake_revenues
 
 if __name__ == "__main__":
-    date="2023-08-03"
+    date="2023-08-04"
     manual_apr_chains = [ManualAPR("jackal", 0.30).to_dict(), ManualAPR("kujira", 0.01).to_dict(), ManualAPR("cudos", 0.08).to_dict(), ManualAPR("stride", 0.10).to_dict()]
+    print("calculating self stake revenues")
     self_stake=main_self_stake_revenues(manual_apr_chains)
     print(self_stake)
     df_self_stake=pd.DataFrame(self_stake)
@@ -35,8 +36,10 @@ if __name__ == "__main__":
     df=pd.DataFrame(revenues)
     print(df)
     revenuetotal=df["revenue"].sum()
+    total_value_delegated=df["total_value_delegated"].sum()
+
     df.to_csv("KleoRevenue.csv")
     print(revenues)
     print(f"total revenue : {revenuetotal}")
-    
+    print(f"total value delegated: {total_value_delegated}")
 

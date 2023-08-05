@@ -63,6 +63,7 @@ def get_network_config(chain):
 def get_network_bech32_prefix(chain):
     chain_results = get_chain_info(chain)
     bech32_prefix = chain_results["chain"]["bech32_prefix"]
+    print(f"bech32 prefix for {chain} is {bech32_prefix}")
     return bech32_prefix
 
 

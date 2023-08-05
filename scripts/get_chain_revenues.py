@@ -125,7 +125,7 @@ def get_chain_revenues(chains : list, date : str = datetime.now().strftime("%y-%
             revenue= float(value_delegated) * float(staking_apr) * float(validator_commission)
             
             if revenue > 0: 
-                chain_dict={"chain_name":chain,"date":date,"revenue":revenue}
+                chain_dict={"chain_name":chain,"date":date,"revenue":revenue,"total_value_delegated":value_delegated}
                 chain_revenues.append(chain_dict)
             else: 
                 failed_chains.append([chain,"revenue is 0"])
@@ -156,8 +156,10 @@ def get_self_stake_revenues(chains : list, manual_apr_chains : list = []):
 
         # iterate through the chainlist
     for chain in chains:
+        print(f"getting self stake revenue for: {chain}")
         try:
             validator_address = get_validator_address(chain=chain, validator_list=validator_list)
+            print(validator_address)
             raw_amount_sum=get_validator_self_stake(chain,validator_address)
 
 
