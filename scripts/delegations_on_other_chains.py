@@ -43,6 +43,7 @@ def getChainToAnalyseAddresses(sourcechain, chaintoanalyse, dfDelegators):
 
 def get_delegated_amount_by_address(api_url, address):
     url = f"{api_url}/cosmos/staking/v1beta1/delegations/{address}"
+    sum_delegator = 0
     try:
         delegation_response = snapshot_delegators_using_API(url)
         sum_delegator = 0
@@ -50,11 +51,11 @@ def get_delegated_amount_by_address(api_url, address):
             for delegations in delegation_response:
                 delegation = float(delegations["delegation"]["shares"])
                 sum_delegator = delegation + sum_delegator
-        return [sum_delegator, str(address)]
-    except Exception as e:
-        print("exception occured")
-        print(e)
 
+    except Exception as e:
+        print(f"can't get delegated amount for address {address}")
+        print(e)
+    return [sum_delegator, str(address)]
 def queryDelegatedBalancesByAddressListAPI(chain_addresses, chaintoanalyse):
     chainBalancesByAddress = []
     chainconfig = utils.get_network_config(chaintoanalyse)
