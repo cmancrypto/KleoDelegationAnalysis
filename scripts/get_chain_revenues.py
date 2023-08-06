@@ -140,7 +140,7 @@ def get_validator_self_stake(chain,validator_address):
     url= f"https://rest.cosmos.directory/{chain}"
     bech32_prefix=get_network_bech32_prefix(chain)
     chain_validator_prefix=f"{bech32_prefix}valoper"
-    converted_address=convert_address_to_address(chain_validator_prefix,validator_address,chain)
+    converted_address=convert_address_to_address(chain_validator_prefix,validator_address,bech32_prefix)
     self_stake=get_delegated_amount_by_address(url,converted_address)
     return self_stake[0]
 

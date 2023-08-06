@@ -14,9 +14,9 @@ def convert_to_juno_address(chain: str, address: str) -> str:
     return Bech32Encoder.Encode("juno", decoded_juno)
 
 
-def convert_address_to_address(fromchain: str, address: str, tochain: str) -> str:
-    decoded_address = Bech32Decoder.Decode(fromchain, address)
-    return Bech32Encoder.Encode(tochain, decoded_address)
+def convert_address_to_address(fromchain_bech32: str, address: str, tochain_bech32: str) -> str:
+    decoded_address = Bech32Decoder.Decode(fromchain_bech32, address)
+    return Bech32Encoder.Encode(tochain_bech32, decoded_address)
 
 
 def getCosmpyClient(cfg):
