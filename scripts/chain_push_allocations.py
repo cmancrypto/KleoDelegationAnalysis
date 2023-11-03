@@ -48,6 +48,7 @@ def get_shares(merge_df):
 
 def get_kleo_alloc(merge_df_shares, total_ukleo_alloc):
     merge_df_shares["amount"]=merge_df_shares["shares"]*total_ukleo_alloc
+    merge_df_shares["amount"]=merge_df_shares["amount"].astype(float)
     merge_df_shares["amount"]=merge_df_shares["amount"].round(0)
     merge_df_shares["amount"] = merge_df_shares["amount"].astype(np.int64)
     formatted_df=merge_df_shares[["address","amount"]]
@@ -71,7 +72,7 @@ def get_kleo_allocations_from_push_snapshots(chain: str, snapshot_date_list: lis
 
 
 if __name__ == "__main__":
-    get_kleo_allocations_from_push_snapshots("stargaze",["2023-07-20","2023-07-27","2023-08-03","2023-08-10","2023-08-17","2023-08-24","2023-08-27"],int(476190*1E6))
+    get_kleo_allocations_from_push_snapshots("archway",["2023-07-20","2023-07-27","2023-08-03","2023-08-10"],int(238095*1E6))
 
 
 
