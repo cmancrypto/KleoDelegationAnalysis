@@ -48,7 +48,7 @@ def get_market_cap(coin_names, date, api_key=None):
     return market_cap_data
 
 # Example usage:
-coin_names = ["akash-network","juno-network","archway","kujira","injective-protocol"]
+coin_names = ["akash-network","juno-network","archway","kujira","injective-protocol","fetch-ai","evmos","stargaze"]
 date = datetime.datetime(2023, 1, 1)  # Replace with your desired date
 
 
