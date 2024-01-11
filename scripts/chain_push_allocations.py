@@ -13,6 +13,8 @@ def get_snapshot_df_list(chain_name : str, list_of_dates : list) -> list[pd.Data
         delegators=data["delegators"]
         snapshot_df=pd.DataFrame(delegators)
         snapshot_df_list.append(snapshot_df)
+        print(date)
+        print(snapshot_df)
     return snapshot_df_list
 
 def merge_snapshot_list(snapshot_df_list, create_check_csv = False):
@@ -45,10 +47,11 @@ def get_shares(merge_df):
     return merge_df
 
 def get_kleo_alloc(merge_df_shares, total_ukleo_alloc):
-    merge_df_shares["ukleo"]=merge_df_shares["shares"]*total_ukleo_alloc
-    merge_df_shares["ukleo"]=merge_df_shares["ukleo"].round(0)
-    merge_df_shares["ukleo"] = merge_df_shares["ukleo"].astype(np.int64)
-    formatted_df=merge_df_shares[["address","ukleo"]]
+    merge_df_shares["amount"]=merge_df_shares["shares"]*total_ukleo_alloc
+    merge_df_shares["amount"]=merge_df_shares["amount"].astype(float)
+    merge_df_shares["amount"]=merge_df_shares["amount"].round(0)
+    merge_df_shares["amount"] = merge_df_shares["amount"].astype(np.int64)
+    formatted_df=merge_df_shares[["address","amount"]]
     return formatted_df
 
 def get_kleo_allocations_from_push_snapshots(chain: str, snapshot_date_list: list, total_ukleo_alloc : int):
@@ -69,7 +72,7 @@ def get_kleo_allocations_from_push_snapshots(chain: str, snapshot_date_list: lis
 
 
 if __name__ == "__main__":
-    get_kleo_allocations_from_push_snapshots("akash",["2023-04-21","2023-04-28","2023-05-04","2023-05-20","2023-05-27","2023-06-03","2023-06-10","2023-06-16"],int(425000*1E6))
+    get_kleo_allocations_from_push_snapshots("archway",["2023-07-20","2023-07-27","2023-08-03","2023-08-10"],int(238095*1E6))
 
 
 

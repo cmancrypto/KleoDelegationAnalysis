@@ -29,6 +29,19 @@ def get_prices_from_cosmos_api(chain_data) -> float:
         #return price of zero
         return 0
 
+##def get_prices_from_osmosis_api(chain_data) -> float: 
+##todo finish this 
+    try:
+        coin_name=list(chain_data["chain"]["prices"]["coingecko"].values())
+        #have to assume that 0 is the native token price
+        price=prices[0]["usd"]
+        return price
+    except KeyError as e:
+        print(f"no key for {e}")
+        #return price of zero
+        return 0
+
+
 def get_staking_apr(chain_data):
     try: 
         staking_apr=chain_data["chain"]["params"]["calculated_apr"]
@@ -258,10 +271,10 @@ class ManualAPR:
 
 
 if __name__ == "__main__":
-    chainlist= ["juno","rebus","teritori","jackal","persistence","stride","chihuahua","shentu","kujira","fetchhub","cudos","migaloo","akash"]
+    chainlist= ["juno","passage","sentinel","stargaze","rebus","teritori","jackal","persistence","chihuahua","shentu","kujira","fetchhub","cudos","migaloo","akash"]
     manual_apr_chains = [ManualAPR("jackal",0.30).to_dict(),ManualAPR("kujira",0.01).to_dict(),ManualAPR("cudos",0.08).to_dict(),ManualAPR("stride",0.10).to_dict()]
     print(manual_apr_chains)
-    buyback_params=main(chainlist, "2023-06-30", 1429657*1E6,manual_apr_chains)
+    buyback_params=main(chainlist, "2023-09-30", 85192*1E6,manual_apr_chains)
     df=pd.DataFrame(buyback_params["buyback_params"])
     print(df["cw20_allocation"].sum())
     df.to_csv("buyback_params.csv")

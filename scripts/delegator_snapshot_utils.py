@@ -16,6 +16,15 @@ def snapshotDelegatorsFromJSON(filepath: str):
     return delegation_responses
 
 
+def snapshot_delegators_from_csv(csv_file_path):
+    try:
+        # Read the CSV file into a DataFrame
+        df = pd.read_csv(csv_file_path)
+        return df
+    except Exception as e:
+        print("Error:", str(e))
+        return None
+
 def convertDelegationResponseToDataFrame(data) -> pd.DataFrame:
     delegators = []
     for dicts in data:
