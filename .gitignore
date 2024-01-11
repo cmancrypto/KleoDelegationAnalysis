@@ -123,6 +123,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+scripts/config.py
 
 # Spyder project settings
 .spyderproject
