@@ -1,8 +1,8 @@
 import pandas as pd
-
 import get_chain_revenues
 from get_chain_revenues import ManualAPR
 import tenacity
+from datetime import datetime, timedelta
 
 
 def get_all_kleomedes_chains(validator_list):
@@ -25,8 +25,9 @@ def main_self_stake_revenues(manual_apr_chains):
     return self_stake_revenues
 
 if __name__ == "__main__":
-    date="2023-11-2"
-    manual_apr_chains = [ManualAPR("jackal", 0.30).to_dict(), ManualAPR("kujira", 0.01).to_dict(), ManualAPR("cudos", 0.08).to_dict(), ManualAPR("stride", 0.10).to_dict()]
+    date_to_query=datetime.now()-timedelta(2)
+    date=datetime.strftime(date_to_query,'%Y-%m-%d')
+    manual_apr_chains = [ManualAPR("jackal", 0.30).to_dict(), ManualAPR("kujira", 0.02).to_dict(), ManualAPR("cudos", 0.08).to_dict(), ManualAPR("stride", 0.10).to_dict()]
     care_about_self_stake=False
     if care_about_self_stake:
         print("calculating self stake revenues")
