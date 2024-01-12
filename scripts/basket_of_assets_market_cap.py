@@ -1,9 +1,8 @@
 import requests
 import datetime
 from config import api_key
-
+import pandas as pd
 def get_market_cap(coin_names, formatted_date, api_key=None):
-    print(formatted_date)
     # Initialize an empty dictionary to store market cap data for each coin
     market_cap_data = {}
 
@@ -28,7 +27,6 @@ def get_market_cap(coin_names, formatted_date, api_key=None):
         if response.status_code == 200:
             # Parse the JSON response
             data = response.json()
-            print(data)
             # Check if data is available for the specified coin
             if data:
                 # Extract and store the market cap for the coin
@@ -40,20 +38,27 @@ def get_market_cap(coin_names, formatted_date, api_key=None):
 
     return market_cap_data
 
-# Example usage:
-coin_names = ["akash-network","juno-network","kujira","injective-protocol","fetch-ai","evmos","stargaze"]
-date = datetime.datetime(2024, 1, 11) # Replace with your desired date
-formatted_date=date.strftime("%d-%m-%Y")
-print(formatted_date)
-market_cap_result = get_market_cap(coin_names, formatted_date, api_key)
+def get_all_market_caps(dates,coin_names):
+    all_market_caps=[]
+    for date in dates:
+        formatted_date=date.strftime("%d-%m-%Y")
+        market_cap_result = get_market_cap(coin_names, formatted_date, api_key)
+        date_market_cap_dict= {date:market_cap_result}
+        for coin_name, market_cap in market_cap_result.items():
+            print(f"{coin_name} Market Cap on {formatted_date}: ${market_cap:,}")
+        all_market_caps.append(date_market_cap_dict)
+    return all_market_caps
 
-sum_caps=0
+#"injective-protocol"
+coin_names = ["akash-network","juno-network","kujira","fetch-ai","evmos","stargaze"]
+dates = [datetime.datetime(2023, 1, 1),datetime.datetime(2024, 1, 1)]
 
-# Display the result
-print(market_cap_result)
-for coin_name, market_cap in market_cap_result.items():
-    print(f"{coin_name} Market Cap on {date}: ${market_cap:,}")
-    sum_caps=sum_caps+market_cap
+all_market_caps=get_all_market_caps(dates,coin_names)
 
-print(sum_caps)
-    
+all_dataframes=[]
+for market_caps in all_market_caps:
+    df=pd.DataFrame(market_caps)
+    all_dataframes.append(df)
+
+result=pd.concat(all_dataframes, axis=1, join = "inner")
+print(result)
