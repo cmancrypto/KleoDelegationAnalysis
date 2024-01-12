@@ -2,6 +2,7 @@ import requests
 import datetime
 from config import api_key
 import pandas as pd
+
 def get_market_cap(coin_names, formatted_date, api_key=None):
     # Initialize an empty dictionary to store market cap data for each coin
     market_cap_data = {}
@@ -27,6 +28,7 @@ def get_market_cap(coin_names, formatted_date, api_key=None):
         if response.status_code == 200:
             # Parse the JSON response
             data = response.json()
+            print(data)
             # Check if data is available for the specified coin
             if data:
                 # Extract and store the market cap for the coin
@@ -50,7 +52,7 @@ def get_all_market_caps(dates,coin_names):
     return all_market_caps
 
 #"injective-protocol"
-coin_names = ["akash-network","juno-network","kujira","fetch-ai","evmos","stargaze"]
+coin_names = ["akash-network","juno-network","kujira","fetch-ai","evmos","stargaze","persistence"]
 dates = [datetime.datetime(2023, 1, 1),datetime.datetime(2024, 1, 1)]
 
 all_market_caps=get_all_market_caps(dates,coin_names)
@@ -62,3 +64,5 @@ for market_caps in all_market_caps:
 
 result=pd.concat(all_dataframes, axis=1, join = "inner")
 print(result)
+
+##["market_data"]["current_price"]["usd"]
