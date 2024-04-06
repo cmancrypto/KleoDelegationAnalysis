@@ -1,6 +1,5 @@
 import requests
 import json
-#"stars166kqwcu8789xh7nk07fcrdzek54205u8gzas684lnas2kzalksqsg5xhqf"
 
 url="https://graphql.mainnet.stargaze-apis.com/graphql"
 
