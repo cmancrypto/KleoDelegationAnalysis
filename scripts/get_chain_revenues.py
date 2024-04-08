@@ -57,6 +57,11 @@ def get_staking_apr(chain_data):
 
 @tenacity.retry(stop=tenacity.stop_after_delay(10))
 def get_delegator_list(chain_name : str, date : str):
+    """
+    :param chain_name: name of chain as string
+    :param date: yyyy-mm-dd format for date want to use snapshot
+    :return: delegator list
+    """
     url=f"https://snapshots.dev.kleomed.es/api/v1/delegator/snapshots/{chain_name}/{date}"
     response= requests.get(url)
     if response.status_code ==200:
