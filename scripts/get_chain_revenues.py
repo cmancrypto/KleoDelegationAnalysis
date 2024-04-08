@@ -89,7 +89,14 @@ def get_validator_address(chain: str,validator_list : list[dict]):
             return validator["operator_address"]
 
 
+# @param: date
 def get_chain_revenues(chains : list, date : str = datetime.now().strftime("%y-%m-%d"), manual_apr_chains : list = []) -> list:
+    """
+    :param chains: list of chains
+    :param date: yyyy-mm-dd format for date want to use snapshot
+    :param manual_apr_chains: a list of get_chain_revenues.MANUAL_APR type
+    :return:
+    """
     chain_revenues=[]
     failed_chains=[]
 
