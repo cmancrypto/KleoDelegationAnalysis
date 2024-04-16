@@ -1,6 +1,5 @@
 import os.path
 
-from bip_utils import Bech32Decoder, Bech32Encoder
 from cosmpy.aerial.client import LedgerClient, NetworkConfig
 from typing import List, Dict
 import requests

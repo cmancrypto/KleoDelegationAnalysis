@@ -15,6 +15,7 @@ def main(filename,chain):
     owners = get_all_owners_from_snapshot(filename)
     if not chain == "stargaze":
         owners=convert_owners_address(owners,chain)
+    #this gives current delegations to all validators, not actual Kleomedes delegations
     delegations = get_all_delegations(addresses=owners, chain=chain)
     df = pd.DataFrame(delegations)
     sum_column = df.iloc[:, 0].sum()
