@@ -4,6 +4,10 @@ from utils import convert_address_to_address
 import pandas as pd
 import json
 
+##this tool is used with a snapshot from https://studio.stargaze.zone/snapshots/holders/ to check their delegations to Kleomedes using the Kleomedes API
+##it can create a distribution snapshot for Kleo at a scaling amount (i.e 0.1 Kleo/Stars)
+##it treats NFT holders of multiple as 1x NFT holder no scaling applied
+
 
 def main(chain: str, snapshot_date: str, NFT_snapshot_filepath : str, create_snapshot : bool = False, create_distribution_json : bool = False):
     ##get the delegator list using the Kleomedes API at a date
@@ -52,8 +56,8 @@ def main(chain: str, snapshot_date: str, NFT_snapshot_filepath : str, create_sna
             json.dump(kleo_alloc_dict, fp=outfile)
             total_distribution=snapshot_delegators["converted_amount"].sum()
             total_staked = snapshot_delegators["amount"].sum()
-            print(f"total to distribute is: {total_distribution}")
-            print(f"total staked is: {total_staked}")
+            print(f"total to distribute is: {total_distribution/1E6}")
+            print(f"total staked is: {total_staked/1E6}")
 
 
 
@@ -62,5 +66,5 @@ def main(chain: str, snapshot_date: str, NFT_snapshot_filepath : str, create_sna
     snapshot_delegators.to_csv(f"NFT_snapshot_delegators{snapshot_date}.csv")
 
 
-main(chain = "stargaze", snapshot_date= "2024-04-15", NFT_snapshot_filepath= "snapshot.csv", create_snapshot=True, create_distribution_json=True)
+main(chain = "stargaze", snapshot_date= "2024-04-17", NFT_snapshot_filepath= "snapshot.csv", create_snapshot=True, create_distribution_json=True)
 
