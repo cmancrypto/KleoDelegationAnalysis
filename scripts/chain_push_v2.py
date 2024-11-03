@@ -1,11 +1,13 @@
 import pandas as pd
 import json
 from get_chain_revenues import get_delegator_list
+from utils import get_network_bech32_prefix, convert_address_to_address
 
 
 def get_delegator_allocations(chain_name: str, snapshot_date: str, allocation_multiplier: float = 0.383):
     """
     Get delegator list and calculate allocations based on staked amounts.
+    Converts addresses to Juno format.
 
     Args:
         chain_name: Name of the chain
@@ -13,7 +15,7 @@ def get_delegator_allocations(chain_name: str, snapshot_date: str, allocation_mu
         allocation_multiplier: Multiplier to calculate allocation amount (default 0.383)
 
     Returns:
-        DataFrame with delegator addresses and allocations
+        DataFrame with delegator addresses (in Juno format) and allocations
     """
     # Get delegator data from snapshot
     data = get_delegator_list(chain_name, snapshot_date)
@@ -23,11 +25,20 @@ def get_delegator_allocations(chain_name: str, snapshot_date: str, allocation_mu
     # Convert delegators list to DataFrame
     delegators = data["delegators"]
     df = pd.DataFrame(delegators)
+
     # Rename columns for clarity
     df = df.rename(columns={
         "address": "address",
         "amount": "snapshot_amount"
     })
+
+    # Get bech32 prefixes
+    source_prefix = get_network_bech32_prefix(chain_name)
+
+    # Convert addresses to Juno format
+    df["address"] = df["address"].apply(
+        lambda x: convert_address_to_address(source_prefix, x, "juno")
+    )
 
     # Calculate allocation amount
     df["amount"] = df["snapshot_amount"] * allocation_multiplier
@@ -52,18 +63,20 @@ def save_allocations_to_json(df: pd.DataFrame, output_file: str = "delegator_all
         json.dump(allocations, f, indent=2)
 
 
-def main(chain_name: str, snapshot_date: str, allocation_multiplier : float, output_file: str = "delegator_allocations.json"):
+def main(chain_name: str, snapshot_date: str, allocation_multiplier: float,
+         output_file: str = "delegator_allocations.json"):
     """
     Main function to get delegator allocations and save to JSON
 
     Args:
         chain_name: Name of the chain
         snapshot_date: Date in yyyy-mm-dd format
+        allocation_multiplier: Multiplier for allocation calculation
         output_file: Name of output JSON file
     """
     try:
         # Get allocations DataFrame
-        df = get_delegator_allocations(chain_name, snapshot_date)
+        df = get_delegator_allocations(chain_name, snapshot_date, allocation_multiplier)
 
         # Save to JSON
         save_allocations_to_json(df, output_file)
